@@ -288,20 +288,28 @@ export const getLessonTypeLabel = (type: LessonType): string => {
   return LABELS.LESSON_TYPES[type] || type;
 };
 
-// Format duration from seconds to readable format
-export const formatDuration = (seconds: number): string => {
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const remainingSeconds = seconds % 60;
-
-  if (hours > 0) {
-    return `${hours}h ${minutes}m ${remainingSeconds}s`;
-  } else if (minutes > 0) {
-    return `${minutes}m ${remainingSeconds}s`;
-  } else {
-    return `${remainingSeconds}s`;
+// Duration formatting utility
+export function formatDuration(seconds: number): string {
+  if (seconds < 60) {
+    return `${seconds}s`;
   }
-};
+  
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  
+  if (minutes < 60) {
+    return remainingSeconds > 0 ? `${minutes}m ${remainingSeconds}s` : `${minutes}m`;
+  }
+  
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  
+  if (remainingMinutes > 0) {
+    return `${hours}h ${remainingMinutes}m`;
+  }
+  
+  return `${hours}h`;
+}
 
 // Format percentage
 export const formatPercentage = (value: number): string => {

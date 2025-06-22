@@ -23,7 +23,7 @@ export function useCategories(options: UseCategoriesOptions = {}) {
       return result.data
     },
     enabled,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 10 * 60 * 1000, // 10 minutes - categories don't change often
     retry: (failureCount, error) => {
       // Don't retry on validation errors
       if (error instanceof Error && error.message.includes("không hợp lệ")) {

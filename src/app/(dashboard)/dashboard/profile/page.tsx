@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { PageHeader } from "@/components/shared/page-header";
+import PageHeader from "@/components/shared/page-header";
 import { ProfileForm } from "./_components/profile-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireAuth } from "@/lib/auth";

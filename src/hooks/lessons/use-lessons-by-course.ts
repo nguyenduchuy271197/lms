@@ -2,22 +2,19 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { getLessonsByCourse } from "@/actions/lessons/get-lessons-by-course"
-import { type GetLessonsByCourseInput } from "@/lib/validations/lesson"
+import { Lesson } from "@/types/custom.types"
+import type { GetLessonsByCourseInput } from "@/lib/validations/lesson"
 
-interface UseLessonsByCourseProps {
-  course_id?: string
+interface UseLessonsByCourseOptions {
   enabled?: boolean
 }
 
-export function useLessonsByCourse({ course_id, enabled = true }: UseLessonsByCourseProps) {
-  return useQuery({
-    queryKey: ["lessons", "by-course", course_id],
-    queryFn: async () => {
-      if (!course_id) {
-        throw new Error("Course ID is required")
-      }
+export function useLessonsByCourse(params: GetLessonsByCourseInput, options: UseLessonsByCourseOptions = {}) {
+  const { enabled = true } = options
 
-      const params: GetLessonsByCourseInput = { course_id }
+  return useQuery({
+    queryKey: ["lessons", "course", params.course_id],
+    queryFn: async (): Promise<Lesson[]> => {
       const result = await getLessonsByCourse(params)
       
       if (!result.success) {
@@ -26,11 +23,13 @@ export function useLessonsByCourse({ course_id, enabled = true }: UseLessonsByCo
       
       return result.data
     },
-    enabled: enabled && !!course_id,
+    enabled: enabled && !!params.course_id,
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: (failureCount, error) => {
-      // Don't retry on authentication/authorization errors
-      if (error.message.includes("không có quyền") || error.message.includes("không tìm thấy")) {
+      // Don't retry on validation errors or access denied
+      if (error instanceof Error && 
+          (error.message.includes("không hợp lệ") || 
+           error.message.includes("không có quyền"))) {
         return false
       }
       return failureCount < 3

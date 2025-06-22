@@ -2,9 +2,9 @@
 
 import { createClient } from "@/lib/supabase/server"
 import { getLessonsByCourseSchema, type GetLessonsByCourseInput } from "@/lib/validations/lesson"
-import { LESSON_ERRORS, COURSE_ERRORS, getErrorMessage } from "@/constants/error-messages"
+import { COURSE_ERRORS, getErrorMessage } from "@/constants/error-messages"
 import { Lesson } from "@/types/custom.types"
-import { isAdmin, getCurrentUserId } from "@/lib/auth"
+import { isAdmin } from "@/lib/auth"
 import { z } from "zod"
 
 type Result = 
@@ -21,9 +21,8 @@ export async function getLessonsByCourse(params: GetLessonsByCourseInput): Promi
 
     // 3. Check if user is admin
     const isUserAdmin = await isAdmin()
-    const currentUserId = await getCurrentUserId()
 
-    // 4. Check if course exists and user has access
+    // 4. Check if course exists
     let courseQuery = supabase
       .from("courses")
       .select("id, is_published")
@@ -40,33 +39,14 @@ export async function getLessonsByCourse(params: GetLessonsByCourseInput): Promi
       return { success: false, error: COURSE_ERRORS.COURSE_NOT_FOUND }
     }
 
-    // 5. For non-admin users, check if they are enrolled in the course
-    if (!isUserAdmin && currentUserId) {
-      const { data: enrollment } = await supabase
-        .from("enrollments")
-        .select("id")
-        .eq("student_id", currentUserId)
-        .eq("course_id", course_id)
-        .eq("status", "active")
-        .single()
-
-      if (!enrollment) {
-        return { success: false, error: LESSON_ERRORS.LESSON_ACCESS_DENIED }
-      }
-    }
-
-    // 6. Build lessons query based on user role
-    let lessonsQuery = supabase
+    // 5. Get lessons (RLS will handle access control)
+    const lessonsQuery = supabase
       .from("lessons")
       .select("*")
       .eq("course_id", course_id)
       .order("order_index", { ascending: true })
 
-    // If not admin, only show published lessons
-    if (!isUserAdmin) {
-      lessonsQuery = lessonsQuery.eq("is_published", true)
-    }
-
+    // If not admin, RLS will automatically filter to only published lessons
     const { data: lessons, error: lessonsError } = await lessonsQuery
 
     if (lessonsError) {

@@ -279,23 +279,11 @@ CREATE POLICY "Only admins can manage courses" ON courses
     FOR ALL USING (current_user_is_admin());
 
 -- Lessons policies
-CREATE POLICY "Students can view lessons of enrolled courses" ON lessons
-    FOR SELECT USING (
-        is_published = true AND (
-            -- Check if user is enrolled in the course
-            EXISTS (
-                SELECT 1 FROM enrollments e
-                WHERE e.student_id = auth.uid() 
-                    AND e.course_id = lessons.course_id
-                    AND e.status IN ('active', 'completed')
-            )
-            OR
-            -- Or if user is admin
-            current_user_is_admin()
-        )
-    );
+CREATE POLICY "Anyone can view published lessons" ON lessons
+    FOR SELECT USING (is_published = true);
 
-
+CREATE POLICY "Admins can view all lessons" ON lessons
+    FOR SELECT USING (current_user_is_admin());
 
 CREATE POLICY "Only admins can manage lessons" ON lessons
     FOR ALL USING (current_user_is_admin());
@@ -331,17 +319,15 @@ CREATE POLICY "Students can update their own progress" ON lesson_progress
 CREATE POLICY "Admins can view all progress" ON lesson_progress
     FOR SELECT USING (current_user_is_admin());
 
-
-
 -- Create storage bucket for course materials
-INSERT INTO storage.buckets (id, name, public) 
-VALUES ('course-videos', 'course-videos', false);
+INSERT INTO storage.buckets (id, name) 
+VALUES ('course-videos', 'course-videos');
 
-INSERT INTO storage.buckets (id, name, public) 
-VALUES ('course-thumbnails', 'course-thumbnails', true);
+INSERT INTO storage.buckets (id, name) 
+VALUES ('course-thumbnails', 'course-thumbnails');
 
-INSERT INTO storage.buckets (id, name, public) 
-VALUES ('user-avatars', 'user-avatars', true);
+INSERT INTO storage.buckets (id, name) 
+VALUES ('user-avatars', 'user-avatars');
 
 -- Storage policies for course videos (private)
 CREATE POLICY "Enrolled students can view course videos" ON storage.objects

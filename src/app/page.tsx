@@ -1,5 +1,3 @@
-import { redirect } from "next/navigation";
-import { getServerUser } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,12 +9,6 @@ import { BookOpen, Users, Clock, Award } from "lucide-react";
 import Link from "next/link";
 
 export default async function HomePage() {
-  // Redirect to dashboard if already authenticated
-  const user = await getServerUser();
-  if (user) {
-    redirect("/dashboard");
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header */}

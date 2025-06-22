@@ -28,7 +28,7 @@ const sidebarNavItems = [
   },
   {
     title: "Khám phá khóa học",
-    href: "/dashboard/courses",
+    href: "/courses",
     icon: FolderOpen,
   },
   {
