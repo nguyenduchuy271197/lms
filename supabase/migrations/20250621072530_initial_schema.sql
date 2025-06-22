@@ -219,6 +219,30 @@ ALTER TABLE lessons ENABLE ROW LEVEL SECURITY;
 ALTER TABLE enrollments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE lesson_progress ENABLE ROW LEVEL SECURITY;
 
+-- Helper functions to avoid recursive policies
+
+-- Function to check user role directly (bypassing RLS)
+CREATE OR REPLACE FUNCTION check_user_role(user_id UUID)
+RETURNS TEXT AS $$
+DECLARE
+    user_role TEXT;
+BEGIN
+    SELECT role INTO user_role 
+    FROM profiles 
+    WHERE id = user_id;
+    
+    RETURN COALESCE(user_role, 'student');
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Function to check if current user is admin (bypassing RLS)
+CREATE OR REPLACE FUNCTION current_user_is_admin()
+RETURNS BOOLEAN AS $$
+BEGIN
+    RETURN check_user_role(auth.uid()) = 'admin';
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
 -- RLS Policies
 
 -- Profiles policies
@@ -229,20 +253,10 @@ CREATE POLICY "Users can update their own profile" ON profiles
     FOR UPDATE USING (auth.uid() = id);
 
 CREATE POLICY "Admins can view all profiles" ON profiles
-    FOR SELECT USING (
-        EXISTS (
-            SELECT 1 FROM profiles 
-            WHERE id = auth.uid() AND role = 'admin'
-        )
-    );
+    FOR SELECT USING (current_user_is_admin());
 
 CREATE POLICY "Admins can update all profiles" ON profiles
-    FOR UPDATE USING (
-        EXISTS (
-            SELECT 1 FROM profiles 
-            WHERE id = auth.uid() AND role = 'admin'
-        )
-    );
+    FOR UPDATE USING (current_user_is_admin());
 
 CREATE POLICY "Enable insert for authenticated users during signup" ON profiles
     FOR INSERT WITH CHECK (auth.uid() = id);
@@ -252,32 +266,17 @@ CREATE POLICY "Anyone can view categories" ON categories
     FOR SELECT USING (true);
 
 CREATE POLICY "Only admins can manage categories" ON categories
-    FOR ALL USING (
-        EXISTS (
-            SELECT 1 FROM profiles 
-            WHERE id = auth.uid() AND role = 'admin'
-        )
-    );
+    FOR ALL USING (current_user_is_admin());
 
 -- Courses policies
 CREATE POLICY "Anyone can view published courses" ON courses
     FOR SELECT USING (is_published = true);
 
 CREATE POLICY "Admins can view all courses" ON courses
-    FOR SELECT USING (
-        EXISTS (
-            SELECT 1 FROM profiles 
-            WHERE id = auth.uid() AND role = 'admin'
-        )
-    );
+    FOR SELECT USING (current_user_is_admin());
 
 CREATE POLICY "Only admins can manage courses" ON courses
-    FOR ALL USING (
-        EXISTS (
-            SELECT 1 FROM profiles 
-            WHERE id = auth.uid() AND role = 'admin'
-        )
-    );
+    FOR ALL USING (current_user_is_admin());
 
 -- Lessons policies
 CREATE POLICY "Students can view lessons of enrolled courses" ON lessons
@@ -292,22 +291,14 @@ CREATE POLICY "Students can view lessons of enrolled courses" ON lessons
             )
             OR
             -- Or if user is admin
-            EXISTS (
-                SELECT 1 FROM profiles 
-                WHERE id = auth.uid() AND role = 'admin'
-            )
+            current_user_is_admin()
         )
     );
 
 
 
 CREATE POLICY "Only admins can manage lessons" ON lessons
-    FOR ALL USING (
-        EXISTS (
-            SELECT 1 FROM profiles 
-            WHERE id = auth.uid() AND role = 'admin'
-        )
-    );
+    FOR ALL USING (current_user_is_admin());
 
 -- Enrollments policies
 CREATE POLICY "Students can view their own enrollments" ON enrollments
@@ -316,10 +307,7 @@ CREATE POLICY "Students can view their own enrollments" ON enrollments
 CREATE POLICY "Students can create their own enrollments" ON enrollments
     FOR INSERT WITH CHECK (
         student_id = auth.uid() AND
-        EXISTS (
-            SELECT 1 FROM profiles 
-            WHERE id = auth.uid() AND role = 'student'
-        )
+        check_user_role(auth.uid()) = 'student'
     );
 
 CREATE POLICY "Students can update their own enrollment status" ON enrollments
@@ -327,20 +315,10 @@ CREATE POLICY "Students can update their own enrollment status" ON enrollments
     WITH CHECK (student_id = auth.uid());
 
 CREATE POLICY "Admins can view all enrollments" ON enrollments
-    FOR SELECT USING (
-        EXISTS (
-            SELECT 1 FROM profiles 
-            WHERE id = auth.uid() AND role = 'admin'
-        )
-    );
+    FOR SELECT USING (current_user_is_admin());
 
 CREATE POLICY "Admins can manage all enrollments" ON enrollments
-    FOR ALL USING (
-        EXISTS (
-            SELECT 1 FROM profiles 
-            WHERE id = auth.uid() AND role = 'admin'
-        )
-    );
+    FOR ALL USING (current_user_is_admin());
 
 -- Lesson progress policies
 CREATE POLICY "Students can view their own progress" ON lesson_progress
@@ -351,12 +329,7 @@ CREATE POLICY "Students can update their own progress" ON lesson_progress
     WITH CHECK (student_id = auth.uid());
 
 CREATE POLICY "Admins can view all progress" ON lesson_progress
-    FOR SELECT USING (
-        EXISTS (
-            SELECT 1 FROM profiles 
-            WHERE id = auth.uid() AND role = 'admin'
-        )
-    );
+    FOR SELECT USING (current_user_is_admin());
 
 
 
@@ -388,11 +361,7 @@ CREATE POLICY "Enrolled students can view course videos" ON storage.objects
 
 CREATE POLICY "Admins can manage course videos" ON storage.objects
     FOR ALL USING (
-        bucket_id = 'course-videos' AND
-        EXISTS (
-            SELECT 1 FROM profiles 
-            WHERE id = auth.uid() AND role = 'admin'
-        )
+        bucket_id = 'course-videos' AND current_user_is_admin()
     );
 
 -- Storage policies for course thumbnails (public)
@@ -401,11 +370,7 @@ CREATE POLICY "Anyone can view course thumbnails" ON storage.objects
 
 CREATE POLICY "Admins can manage course thumbnails" ON storage.objects
     FOR ALL USING (
-        bucket_id = 'course-thumbnails' AND
-        EXISTS (
-            SELECT 1 FROM profiles 
-            WHERE id = auth.uid() AND role = 'admin'
-        )
+        bucket_id = 'course-thumbnails' AND current_user_is_admin()
     );
 
 -- Storage policies for user avatars (public read, own write)
