@@ -2,7 +2,6 @@
 
 import { createClient } from "@/lib/supabase/server"
 import { getErrorMessage } from "@/constants/error-messages"
-import { redirect } from "next/navigation"
 
 type Result = 
   | { success: true }
@@ -28,11 +27,3 @@ export async function logoutUser(): Promise<Result> {
     return { success: false, error: getErrorMessage(error) }
   }
 }
-
-// Server action với redirect
-export async function logoutAndRedirect() {
-  await logoutUser()
-  
-  // Always redirect to login page after logout attempt
-  redirect("/auth/login")
-} 

@@ -3,7 +3,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { registerSchema, type RegisterInput } from "@/lib/validations/auth"
 import { AUTH_ERRORS, getErrorMessage } from "@/constants/error-messages"
-import { redirect } from "next/navigation"
 import { z } from "zod"
 
 type Result = 
@@ -62,14 +61,3 @@ export async function registerUser(params: RegisterInput): Promise<Result> {
     return { success: false, error: getErrorMessage(error) }
   }
 }
-
-// Server action với redirect
-export async function registerAndRedirect(params: RegisterInput) {
-  const result = await registerUser(params)
-  
-  if (result.success) {
-    redirect("/dashboard")
-  }
-  
-  return result
-} 

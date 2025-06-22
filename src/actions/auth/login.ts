@@ -3,7 +3,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { loginSchema, type LoginInput } from "@/lib/validations/auth"
 import { AUTH_ERRORS, getErrorMessage } from "@/constants/error-messages"
-import { redirect } from "next/navigation"
 import { z } from "zod"
 
 type Result = 
@@ -61,14 +60,3 @@ export async function loginUser(params: LoginInput): Promise<Result> {
     return { success: false, error: getErrorMessage(error) }
   }
 }
-
-// Server action với redirect
-export async function loginAndRedirect(params: LoginInput) {
-  const result = await loginUser(params)
-  
-  if (result.success) {
-    redirect("/dashboard")
-  }
-  
-  return result
-} 
