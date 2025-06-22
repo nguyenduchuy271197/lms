@@ -1,102 +1,225 @@
-import Image from "next/image";
+import { redirect } from "next/navigation";
+import { getServerUser } from "@/lib/auth";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { BookOpen, Users, Clock, Award } from "lucide-react";
+import Link from "next/link";
 
-export default function Home() {
+export default async function HomePage() {
+  // Redirect to dashboard if already authenticated
+  const user = await getServerUser();
+  if (user) {
+    redirect("/dashboard");
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Header */}
+      <header className="border-b bg-white/80 backdrop-blur-md">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4">
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
+              <BookOpen className="w-4 h-4 text-primary-foreground" />
+            </div>
+            <span className="text-xl font-bold">LMS Platform</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button variant="ghost" asChild>
+              <Link href="/login">Đăng nhập</Link>
+            </Button>
+            <Button asChild>
+              <Link href="/register">Đăng ký</Link>
+            </Button>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </header>
+
+      {/* Hero Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+            Nền tảng học tập
+            <span className="text-primary"> trực tuyến</span>
+          </h1>
+          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            Khám phá hàng ngàn khóa học chất lượng cao, học tập theo tiến độ của
+            bạn và nâng cao kỹ năng cùng những giảng viên hàng đầu.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" asChild>
+              <Link href="/register">Bắt đầu học tập</Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <Link href="/courses">Khám phá khóa học</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold mb-4">Tại sao chọn chúng tôi?</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Chúng tôi cung cấp trải nghiệm học tập toàn diện với những tính
+              năng hiện đại
+            </p>
+          </div>
+
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            <Card className="text-center">
+              <CardHeader>
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <BookOpen className="w-6 h-6 text-blue-600" />
+                </div>
+                <CardTitle>Khóa học đa dạng</CardTitle>
+                <CardDescription>
+                  Hàng ngàn khóa học từ cơ bản đến nâng cao
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="text-center">
+              <CardHeader>
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <Users className="w-6 h-6 text-green-600" />
+                </div>
+                <CardTitle>Cộng đồng học tập</CardTitle>
+                <CardDescription>
+                  Kết nối với hàng triệu học viên trên toàn thế giới
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="text-center">
+              <CardHeader>
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <Clock className="w-6 h-6 text-purple-600" />
+                </div>
+                <CardTitle>Học mọi lúc mọi nơi</CardTitle>
+                <CardDescription>
+                  Truy cập khóa học 24/7 trên mọi thiết bị
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="text-center">
+              <CardHeader>
+                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <Award className="w-6 h-6 text-orange-600" />
+                </div>
+                <CardTitle>Chứng chí uy tín</CardTitle>
+                <CardDescription>
+                  Nhận chứng chỉ được công nhận sau khi hoàn thành
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-4">
+            Sẵn sàng bắt đầu hành trình học tập?
+          </h2>
+          <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
+            Tham gia cùng hàng triệu học viên đã tin tưởng chọn nền tảng của
+            chúng tôi
+          </p>
+          <Button size="lg" asChild>
+            <Link href="/register">Đăng ký miễn phí ngay</Link>
+          </Button>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-slate-900 text-white py-12">
+        <div className="container mx-auto px-4">
+          <div className="grid gap-8 md:grid-cols-4">
+            <div>
+              <div className="flex items-center space-x-2 mb-4">
+                <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
+                  <BookOpen className="w-4 h-4 text-primary-foreground" />
+                </div>
+                <span className="text-xl font-bold">LMS Platform</span>
+              </div>
+              <p className="text-slate-400">
+                Nền tảng học tập trực tuyến hàng đầu Việt Nam
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-4">Về chúng tôi</h3>
+              <ul className="space-y-2 text-slate-400">
+                <li>
+                  <Link href="#" className="hover:text-white">
+                    Giới thiệu
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-white">
+                    Tuyển dụng
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-white">
+                    Liên hệ
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-4">Hỗ trợ</h3>
+              <ul className="space-y-2 text-slate-400">
+                <li>
+                  <Link href="#" className="hover:text-white">
+                    Trung tâm trợ giúp
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-white">
+                    Chính sách
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-white">
+                    Điều khoản
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-4">Khóa học</h3>
+              <ul className="space-y-2 text-slate-400">
+                <li>
+                  <Link href="#" className="hover:text-white">
+                    Lập trình
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-white">
+                    Thiết kế
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-white">
+                    Marketing
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-slate-800 mt-8 pt-8 text-center text-slate-400">
+            <p>&copy; 2024 LMS Platform. Tất cả quyền được bảo lưu.</p>
+          </div>
+        </div>
       </footer>
     </div>
   );
