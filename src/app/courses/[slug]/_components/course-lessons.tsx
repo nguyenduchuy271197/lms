@@ -3,14 +3,20 @@
 import { useLessonsByCourse } from "@/hooks/lessons/use-lessons-by-course";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { PlayCircle, Clock, Lock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { PlayCircle, Clock, Lock, TrendingUp } from "lucide-react";
 import { formatDuration } from "@/constants/labels";
+import Link from "next/link";
 
 interface CourseLessonsProps {
   courseId: string;
+  courseSlug: string;
 }
 
-export default function CourseLessons({ courseId }: CourseLessonsProps) {
+export default function CourseLessons({
+  courseId,
+  courseSlug,
+}: CourseLessonsProps) {
   const {
     data: lessons = [],
     isLoading,
@@ -80,17 +86,34 @@ export default function CourseLessons({ courseId }: CourseLessonsProps) {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>Nội dung khóa học</CardTitle>
-          <div className="text-sm text-gray-600">
-            {lessons.length} bài học • {formatDuration(totalDuration)}
+          <div className="flex items-center space-x-4">
+            <div className="text-sm text-gray-600">
+              {lessons.length} bài học • {formatDuration(totalDuration)}
+            </div>
+            <Button asChild variant="outline" size="sm">
+              <Link href={`/courses/${courseSlug}/progress`}>
+                <TrendingUp className="h-4 w-4 mr-2" />
+                Xem tiến độ
+              </Link>
+            </Button>
           </div>
         </div>
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
           {lessons.map((lesson, index) => (
-            <div
+            <Link
               key={lesson.id}
-              className="group flex items-center gap-4 p-4 border rounded-lg hover:shadow-md transition-shadow cursor-pointer"
+              href={
+                lesson.is_published
+                  ? `/courses/${courseSlug}/lessons/${lesson.id}`
+                  : "#"
+              }
+              className={`group flex items-center gap-4 p-4 border rounded-lg hover:shadow-md transition-shadow ${
+                lesson.is_published
+                  ? "cursor-pointer"
+                  : "cursor-not-allowed opacity-60"
+              }`}
             >
               {/* Lesson Icon */}
               <div className="flex-shrink-0">
@@ -143,7 +166,7 @@ export default function CourseLessons({ courseId }: CourseLessonsProps) {
                   <div className="text-xs text-gray-400">Sắp ra mắt</div>
                 )}
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </CardContent>

@@ -28,6 +28,7 @@ import {
 import { EnrollmentWithDetails } from "@/types/custom.types";
 import { LABELS } from "@/constants/labels";
 import { useUpdateEnrollmentStatus } from "@/hooks/enrollments/use-update-enrollment-status";
+import { useLessonsByCourse } from "@/hooks/lessons/use-lessons-by-course";
 
 interface MyCourseCardProps {
   enrollment: EnrollmentWithDetails;
@@ -38,9 +39,25 @@ export default function MyCourseCard({ enrollment }: MyCourseCardProps) {
 
   const course = enrollment.courses;
 
+  // Get lessons to find next lesson to learn
+  const { data: lessons } = useLessonsByCourse(
+    { course_id: course?.id || "" },
+    { enabled: !!course?.id }
+  );
+
   if (!course) {
     return null;
   }
+
+  // Helper function to get the best lesson to continue from
+  const getContinueLessonId = () => {
+    if (!lessons || lessons.length === 0) return null;
+
+    // Find first published lesson - simplified for now
+    // TODO: In the future, find the first incomplete lesson
+    const firstPublishedLesson = lessons.find((lesson) => lesson.is_published);
+    return firstPublishedLesson?.id || null;
+  };
 
   const handleStatusUpdate = async (newStatus: "active" | "dropped") => {
     try {
@@ -82,11 +99,17 @@ export default function MyCourseCard({ enrollment }: MyCourseCardProps) {
   };
 
   const getActionButton = () => {
+    // Get the appropriate lesson to continue from
+    const lessonId = getContinueLessonId();
+    const continueHref = lessonId
+      ? `/courses/${course.slug}/lessons/${lessonId}`
+      : `/courses/${course.slug}`;
+
     switch (enrollment.status) {
       case "active":
         return (
           <Button asChild size="sm" className="w-full">
-            <Link href={`/courses/${course.slug}`}>
+            <Link href={continueHref}>
               <Play className="w-4 h-4 mr-2" />
               Tiếp tục học
             </Link>
@@ -95,7 +118,7 @@ export default function MyCourseCard({ enrollment }: MyCourseCardProps) {
       case "completed":
         return (
           <Button asChild variant="outline" size="sm" className="w-full">
-            <Link href={`/courses/${course.slug}`}>
+            <Link href={continueHref}>
               <BookOpen className="w-4 h-4 mr-2" />
               Xem lại
             </Link>

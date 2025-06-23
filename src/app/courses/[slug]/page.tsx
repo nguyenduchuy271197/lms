@@ -80,7 +80,7 @@ export default async function CourseDetailPage({
                 </div>
               }
             >
-              <CourseLessons courseId={course.id} />
+              <CourseLessons courseId={course.id} courseSlug={course.slug} />
             </Suspense>
           </div>
 

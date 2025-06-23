@@ -24,6 +24,7 @@ import {
 import { Course } from "@/types/custom.types";
 import { useCheckEnrollment } from "@/hooks/enrollments/use-check-enrollment";
 import { useCreateEnrollment } from "@/hooks/enrollments/use-create-enrollment";
+import { useLessonsByCourse } from "@/hooks/lessons/use-lessons-by-course";
 import { toast } from "sonner";
 
 interface CourseEnrollmentProps {
@@ -44,7 +45,17 @@ export default function CourseEnrollment({
       enabled: !!userId,
     });
 
+  // Get lessons to find first lesson
+  const { data: lessons } = useLessonsByCourse({ course_id: course.id });
+
   const createEnrollmentMutation = useCreateEnrollment();
+
+  // Helper function to get the first available lesson
+  const getFirstLessonId = () => {
+    if (!lessons || lessons.length === 0) return null;
+    const firstPublishedLesson = lessons.find((lesson) => lesson.is_published);
+    return firstPublishedLesson?.id || null;
+  };
 
   const handleEnrollment = async () => {
     if (!userId) {
@@ -59,8 +70,13 @@ export default function CourseEnrollment({
         course_id: course.id,
       });
 
-      // Redirect to my courses after successful enrollment
-      router.push("/dashboard/my-courses");
+      // Redirect to first lesson or course page after enrollment
+      const lessonId = getFirstLessonId();
+      const redirectPath = lessonId
+        ? `/courses/${course.slug}/lessons/${lessonId}`
+        : `/courses/${course.slug}`;
+
+      router.push(redirectPath);
     } catch {
       // Error handling is done in the mutation hook
     } finally {
@@ -69,7 +85,12 @@ export default function CourseEnrollment({
   };
 
   const handleContinueLearning = () => {
-    router.push(`/dashboard/my-courses`);
+    const lessonId = getFirstLessonId();
+    const redirectPath = lessonId
+      ? `/courses/${course.slug}/lessons/${lessonId}`
+      : `/courses/${course.slug}`;
+
+    router.push(redirectPath);
   };
 
   const getEnrollmentButton = () => {
