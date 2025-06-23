@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 import CourseGrid from "./_components/course-grid";
 import CourseFilters from "./_components/course-filters";
-import PageHeader from "@/components/shared/page-header";
+import { PageHeader } from "@/components/shared/page-header";
 import { Loader2 } from "lucide-react";
 
 export const metadata: Metadata = {

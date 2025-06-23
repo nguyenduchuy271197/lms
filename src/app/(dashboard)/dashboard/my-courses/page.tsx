@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { requireAuth } from "@/lib/auth";
-import PageHeader from "@/components/shared/page-header";
+import { PageHeader } from "@/components/shared/page-header";
 import MyCoursesContainer from "./_components/my-courses-container";
 
 export default async function MyCoursesPage() {

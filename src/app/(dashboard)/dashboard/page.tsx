@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import PageHeader from "@/components/shared/page-header";
+import { PageHeader } from "@/components/shared/page-header";
 import DashboardStats from "./_components/dashboard-stats";
 import DashboardActivity from "./_components/dashboard-activity";
 

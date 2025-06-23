@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getCategories } from "@/actions/categories/get-categories";
 import CategoryCourses from "./_components/category-courses";
-import PageHeader from "@/components/shared/page-header";
+import { PageHeader } from "@/components/shared/page-header";
 import { Loader2 } from "lucide-react";
 
 interface CategoryPageProps {

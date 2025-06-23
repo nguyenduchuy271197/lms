@@ -116,22 +116,29 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
 
         {/* Main Navigation */}
         <div className="space-y-1">
-          {navItems.map((item) => (
-            <Button
-              key={item.href}
-              variant={pathname === item.href ? "secondary" : "ghost"}
-              className={cn(
-                "w-full justify-start",
-                pathname === item.href && "bg-secondary"
-              )}
-              asChild
-            >
-              <Link href={item.href}>
-                <item.icon className="mr-2 h-4 w-4" />
-                {item.title}
-              </Link>
-            </Button>
-          ))}
+          {navItems.map((item) => {
+            const isActive =
+              item.href === "/dashboard/admin/courses"
+                ? pathname.startsWith(item.href)
+                : pathname === item.href;
+
+            return (
+              <Button
+                key={item.href}
+                variant={isActive ? "secondary" : "ghost"}
+                className={cn(
+                  "w-full justify-start",
+                  isActive && "bg-secondary"
+                )}
+                asChild
+              >
+                <Link href={item.href}>
+                  <item.icon className="mr-2 h-4 w-4" />
+                  {item.title}
+                </Link>
+              </Button>
+            );
+          })}
         </div>
       </ScrollArea>
     </div>

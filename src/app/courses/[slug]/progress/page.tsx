@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { getCourseBySlug } from "@/actions/courses/get-course-by-slug";
 import { requireAuth } from "@/lib/auth";
-import PageHeader from "@/components/shared/page-header";
+import { PageHeader } from "@/components/shared/page-header";
 import CourseProgressOverview from "./_components/course-progress-overview";
 import CourseProgressStats from "./_components/course-progress-stats";
 import CourseProgressLessons from "./_components/course-progress-lessons";

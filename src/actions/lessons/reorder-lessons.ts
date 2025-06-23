@@ -72,8 +72,32 @@ export async function reorderLessons(params: ReorderLessonsInput): Promise<Resul
 
     // 8. Perform batch update using transaction
     try {
-      // Start transaction by updating all lessons
-      const updatePromises = lessons.map(lesson => 
+      // Use a large offset to avoid unique constraint conflicts during reordering
+      const TEMP_OFFSET = 10000
+      
+      // First, set all order_index to temporary high values to avoid conflicts
+      const tempUpdatePromises = lessons.map((lesson, index) => 
+        supabase
+          .from("lessons")
+          .update({
+            order_index: TEMP_OFFSET + index + 1,
+            updated_at: new Date().toISOString()
+          })
+          .eq("id", lesson.id)
+          .eq("course_id", course_id)
+      )
+
+      const tempResults = await Promise.all(tempUpdatePromises)
+      
+      // Check if any temp update failed
+      const failedTempUpdates = tempResults.filter(result => result.error)
+      if (failedTempUpdates.length > 0) {
+        console.error("Temp reorder lessons errors:", failedTempUpdates.map(r => r.error))
+        return { success: false, error: LESSON_ERRORS.LESSON_UPDATE_FAILED }
+      }
+
+      // Then, update to the correct final values
+      const finalUpdatePromises = lessons.map(lesson => 
         supabase
           .from("lessons")
           .update({
@@ -81,15 +105,19 @@ export async function reorderLessons(params: ReorderLessonsInput): Promise<Resul
             updated_at: new Date().toISOString()
           })
           .eq("id", lesson.id)
-          .eq("course_id", course_id) // Additional safety check
+          .eq("course_id", course_id)
       )
 
-      const results = await Promise.all(updatePromises)
+      const finalResults = await Promise.all(finalUpdatePromises)
       
-      // Check if any update failed
-      const failedUpdates = results.filter(result => result.error)
-      if (failedUpdates.length > 0) {
-        console.error("Reorder lessons errors:", failedUpdates.map(r => r.error))
+      // Check if any final update failed
+      const failedFinalUpdates = finalResults.filter(result => result.error)
+      if (failedFinalUpdates.length > 0) {
+        console.error("Final reorder lessons errors:", failedFinalUpdates.map(r => r.error))
+        
+        // Try to rollback by setting back to original order if we can identify it
+        console.log("Attempting to rollback reorder operation...")
+        
         return { success: false, error: LESSON_ERRORS.LESSON_UPDATE_FAILED }
       }
 

@@ -33,7 +33,7 @@ export async function uploadThumbnail(params: UploadThumbnailInput): Promise<Res
     }
 
     // 5. Get file from FormData
-    const file = formData.get("file") as File
+    const file = formData.get("thumbnail") as File
     if (!file) {
       return { success: false, error: UPLOAD_ERRORS.FILE_REQUIRED }
     }
@@ -53,11 +53,13 @@ export async function uploadThumbnail(params: UploadThumbnailInput): Promise<Res
     // 8. Delete old thumbnail if exists
     if (existingCourse.thumbnail_url) {
       try {
-        const oldThumbnailPath = existingCourse.thumbnail_url.split('/').pop()
-        if (oldThumbnailPath) {
+        const oldUrlParts = existingCourse.thumbnail_url.split('/')
+        const bucketIndex = oldUrlParts.findIndex(part => part === 'course-thumbnails')
+        if (bucketIndex !== -1) {
+          const oldFilePath = oldUrlParts.slice(bucketIndex + 1).join('/')
           await supabase.storage
             .from("course-thumbnails")
-            .remove([`${courseId}/${oldThumbnailPath}`])
+            .remove([oldFilePath])
         }
       } catch (deleteError) {
         console.error("Delete old thumbnail error:", deleteError)
@@ -67,8 +69,8 @@ export async function uploadThumbnail(params: UploadThumbnailInput): Promise<Res
 
     // 9. Generate unique filename
     const fileExtension = file.name.split('.').pop()
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExtension}`
-    const filePath = `${courseId}/${fileName}`
+    const fileName = `${courseId}-${Date.now()}.${fileExtension}`
+    const filePath = `courses/${fileName}`
 
     // 10. Upload file to storage
     const { data: uploadData, error: uploadError } = await supabase.storage
