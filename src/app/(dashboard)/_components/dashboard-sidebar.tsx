@@ -65,11 +65,11 @@ const adminNavItems = [
     href: "/admin/categories",
     icon: Tags,
   },
-  {
-    title: "Báo cáo",
-    href: "/admin/reports",
-    icon: BarChart3,
-  },
+  // {
+  //   title: "Báo cáo",
+  //   href: "/admin/reports",
+  //   icon: BarChart3,
+  // },
 ];
 
 export default function DashboardSidebar({ user }: DashboardSidebarProps) {
