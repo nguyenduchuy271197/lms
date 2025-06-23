@@ -17,3 +17,23 @@ export function generateSlug(text: string): string {
     .replace(/-+/g, "-") // Replace multiple hyphens with single
     .replace(/^-|-$/g, "") // Remove leading/trailing hyphens
 }
+
+export function formatNumber(value: number): string {
+  if (isNaN(value) || !isFinite(value)) {
+    return "0";
+  }
+  
+  return new Intl.NumberFormat("vi-VN").format(value);
+}
+
+export function formatPercent(value: number): string {
+  if (isNaN(value) || !isFinite(value)) {
+    return "0%";
+  }
+  
+  return new Intl.NumberFormat("vi-VN", {
+    style: "percent",
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  }).format(value / 100);
+}

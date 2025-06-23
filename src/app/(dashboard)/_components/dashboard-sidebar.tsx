@@ -42,27 +42,32 @@ const studentNavItems = [
 const adminNavItems = [
   {
     title: "Dashboard",
-    href: "/dashboard",
+    href: "/admin",
     icon: LayoutDashboard,
   },
   {
     title: "Quản lý người dùng",
-    href: "/dashboard/admin/users",
+    href: "/admin/users",
     icon: Users,
   },
   {
-    title: "Quản lý khóa học",
-    href: "/dashboard/admin/courses",
+    title: "Quản lý học viên",
+    href: "/admin/students",
     icon: GraduationCap,
   },
   {
+    title: "Quản lý khóa học",
+    href: "/admin/courses",
+    icon: BookOpen,
+  },
+  {
     title: "Quản lý danh mục",
-    href: "/dashboard/admin/categories",
+    href: "/admin/categories",
     icon: Tags,
   },
   {
     title: "Báo cáo",
-    href: "/dashboard/admin/reports",
+    href: "/admin/reports",
     icon: BarChart3,
   },
 ];
@@ -118,7 +123,9 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
         <div className="space-y-1">
           {navItems.map((item) => {
             const isActive =
-              item.href === "/dashboard/admin/courses"
+              item.href === "/dashboard/admin/courses" ||
+              item.href === "/dashboard/admin/students" ||
+              item.href === "/dashboard/admin/users"
                 ? pathname.startsWith(item.href)
                 : pathname === item.href;
 

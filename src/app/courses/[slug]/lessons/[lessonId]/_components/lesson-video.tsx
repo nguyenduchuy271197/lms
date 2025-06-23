@@ -70,7 +70,7 @@ export default function LessonVideo({ lesson }: LessonVideoProps) {
           : null,
       });
     }
-  }, [lesson.id]);
+  }, [lesson.id, updateProgressMutation]);
 
   // Save progress periodically
   useEffect(() => {
@@ -113,7 +113,7 @@ export default function LessonVideo({ lesson }: LessonVideoProps) {
         });
       }
     },
-    [duration, lesson.id]
+    [duration, lesson.id, markCompleteMutation]
   );
 
   const handleDuration = useCallback((duration: number) => {
@@ -128,7 +128,7 @@ export default function LessonVideo({ lesson }: LessonVideoProps) {
         watched_seconds: Math.floor(duration),
       });
     }
-  }, [duration, lesson.id]);
+  }, [duration, lesson.id, markCompleteMutation]);
 
   const handleManualComplete = useCallback(() => {
     if (!hasBeenCompleted) {
@@ -138,7 +138,7 @@ export default function LessonVideo({ lesson }: LessonVideoProps) {
         watched_seconds: Math.floor(watchedSeconds),
       });
     }
-  }, [hasBeenCompleted, watchedSeconds, lesson.id]); // Keep necessary dependencies
+  }, [hasBeenCompleted, watchedSeconds, lesson.id, markCompleteMutation]);
 
   const watchedPercentage =
     duration > 0 ? (watchedSeconds / duration) * 100 : 0;

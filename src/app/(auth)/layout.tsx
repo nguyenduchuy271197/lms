@@ -9,7 +9,12 @@ export default async function AuthLayout({
   // Redirect if already authenticated
   const user = await getServerUser();
   if (user) {
-    redirect("/dashboard");
+    // Check user role and redirect accordingly
+    if (user.profile.role === "admin") {
+      redirect("/admin");
+    } else {
+      redirect("/dashboard");
+    }
   }
 
   return <div className="min-h-screen">{children}</div>;
