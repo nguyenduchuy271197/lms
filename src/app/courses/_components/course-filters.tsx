@@ -4,7 +4,6 @@ import { useCategories } from "@/hooks/categories/use-categories";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Filter, X } from "lucide-react";
 
 interface SearchParams {
@@ -105,21 +104,8 @@ export default function CourseFilters({ searchParams }: CourseFiltersProps) {
                 onClick={() => handleCategoryClick(category.id)}
               >
                 {category.name}
-                {selectedCategory === category.id && (
-                  <Badge variant="secondary" className="ml-auto">
-                    Đã chọn
-                  </Badge>
-                )}
               </Button>
             ))}
-          </div>
-        </div>
-
-        {/* Additional filters can be added here */}
-        <div>
-          <h4 className="font-medium mb-3">Khác</h4>
-          <div className="space-y-2 text-sm text-gray-500">
-            <p>Thêm bộ lọc sẽ được cập nhật trong tương lai</p>
           </div>
         </div>
       </CardContent>

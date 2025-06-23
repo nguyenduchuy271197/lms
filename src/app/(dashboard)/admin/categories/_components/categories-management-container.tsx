@@ -8,6 +8,7 @@ import { useCategories } from "@/hooks/categories/use-categories";
 import { Category } from "@/types/custom.types";
 import CategoriesTable from "./categories-table";
 import CategoryDialog from "./category-dialog";
+import { PageHeader } from "@/components/shared/page-header";
 
 export default function CategoriesManagementContainer() {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
@@ -40,21 +41,18 @@ export default function CategoriesManagementContainer() {
 
   return (
     <div className="space-y-6">
-      {/* Main Content */}
-      <Card className="p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-lg font-semibold">Danh sách danh mục</h2>
-            <p className="text-sm text-muted-foreground">
-              Quản lý tất cả danh mục khóa học
-            </p>
-          </div>
+      <PageHeader
+        title="Quản lý danh mục"
+        description="Tạo và quản lý danh mục cho các khóa học"
+        action={
           <Button onClick={handleCreateCategory}>
             <Plus className="h-4 w-4 mr-2" />
             Tạo danh mục mới
           </Button>
-        </div>
-
+        }
+      />
+      {/* Main Content */}
+      <Card className="p-6">
         <CategoriesTable
           categories={categories}
           isLoading={isLoading}
