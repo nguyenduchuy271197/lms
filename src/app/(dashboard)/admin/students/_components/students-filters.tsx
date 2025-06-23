@@ -83,7 +83,7 @@ export default function StudentsFilters({
 
   return (
     <Card>
-      <CardContent className="p-6">
+      <CardContent>
         <div className="space-y-4">
           {/* Search Row */}
           <form onSubmit={handleSearchSubmit} className="flex gap-2">

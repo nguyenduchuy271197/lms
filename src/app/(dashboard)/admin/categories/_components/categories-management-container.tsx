@@ -8,7 +8,6 @@ import { useCategories } from "@/hooks/categories/use-categories";
 import { Category } from "@/types/custom.types";
 import CategoriesTable from "./categories-table";
 import CategoryDialog from "./category-dialog";
-import CategoriesStats from "./categories-stats";
 
 export default function CategoriesManagementContainer() {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
@@ -41,9 +40,6 @@ export default function CategoriesManagementContainer() {
 
   return (
     <div className="space-y-6">
-      {/* Stats Cards */}
-      <CategoriesStats categories={categories} />
-
       {/* Main Content */}
       <Card className="p-6">
         <div className="flex items-center justify-between mb-6">

@@ -5,7 +5,6 @@ import { useAllStudents } from "@/hooks/admin/students/use-all-students";
 import { GetAllStudentsAdminInput } from "@/lib/validations/admin-student-management";
 import StudentsTable from "./students-table";
 import StudentsFilters from "./students-filters";
-import StudentsStats from "./students-stats";
 import StudentDetailsDialog from "./student-details-dialog";
 import { toast } from "sonner";
 
@@ -58,11 +57,6 @@ export default function StudentsManagementContainer() {
 
   return (
     <div className="space-y-6">
-      {/* Statistics */}
-      {studentsData?.statistics && (
-        <StudentsStats statistics={studentsData.statistics} />
-      )}
-
       {/* Filters */}
       <StudentsFilters
         filters={filters}

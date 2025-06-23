@@ -11,7 +11,6 @@ import {
   BookOpen,
   User,
   Users,
-  BarChart3,
   GraduationCap,
   Tags,
 } from "lucide-react";
