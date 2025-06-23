@@ -85,7 +85,7 @@ function SortableItem({
       style={style}
       className={`group ${isDragging ? "opacity-50" : ""}`}
     >
-      <CardContent className="p-6">
+      <CardContent className="px-6">
         <div className="flex items-center space-x-4">
           {/* Drag Handle */}
           <Button
