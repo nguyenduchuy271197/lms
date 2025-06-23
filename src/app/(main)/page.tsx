@@ -7,30 +7,12 @@ import {
 } from "@/components/ui/card";
 import { BookOpen, Users, Clock, Award } from "lucide-react";
 import Link from "next/link";
+import Header from "./_components/header";
+import Footer from "./_components/footer";
 
 export default async function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-md">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
-              <BookOpen className="w-4 h-4 text-primary-foreground" />
-            </div>
-            <span className="text-xl font-bold">LMS Platform</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Button variant="ghost" asChild>
-              <Link href="/login">Đăng nhập</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/register">Đăng ký</Link>
-            </Button>
-          </div>
-        </div>
-      </header>
-
       {/* Hero Section */}
       <section className="py-20">
         <div className="container mx-auto px-4 text-center">
@@ -131,88 +113,6 @@ export default async function HomePage() {
           </Button>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-slate-900 text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid gap-8 md:grid-cols-4">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
-                  <BookOpen className="w-4 h-4 text-primary-foreground" />
-                </div>
-                <span className="text-xl font-bold">LMS Platform</span>
-              </div>
-              <p className="text-slate-400">
-                Nền tảng học tập trực tuyến hàng đầu Việt Nam
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Về chúng tôi</h3>
-              <ul className="space-y-2 text-slate-400">
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Giới thiệu
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Tuyển dụng
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Liên hệ
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Hỗ trợ</h3>
-              <ul className="space-y-2 text-slate-400">
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Trung tâm trợ giúp
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Chính sách
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Điều khoản
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Khóa học</h3>
-              <ul className="space-y-2 text-slate-400">
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Lập trình
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Thiết kế
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Marketing
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-slate-800 mt-8 pt-8 text-center text-slate-400">
-            <p>&copy; 2024 LMS Platform. Tất cả quyền được bảo lưu.</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

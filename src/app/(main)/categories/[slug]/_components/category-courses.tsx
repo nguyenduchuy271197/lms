@@ -1,8 +1,8 @@
 "use client";
 
 import { useCourses } from "@/hooks/courses/use-courses";
-import CourseCard from "@/app/courses/_components/course-card";
-import CoursePagination from "@/app/courses/_components/course-pagination";
+import CourseCard from "@/app/(main)/courses/_components/course-card";
+import CoursePagination from "@/app/(main)/courses/_components/course-pagination";
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Grid3X3, List } from "lucide-react";
