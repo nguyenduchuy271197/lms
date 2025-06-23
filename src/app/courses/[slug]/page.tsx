@@ -7,7 +7,7 @@ import CourseHero from "./_components/course-hero";
 import CourseContent from "./_components/course-content";
 import CourseLessons from "./_components/course-lessons";
 import CourseEnrollment from "./_components/course-enrollment";
-import { Loader2 } from "lucide-react";
+import { Loading } from "@/components/shared/loading";
 
 interface CourseDetailPageProps {
   params: Promise<{
@@ -73,12 +73,7 @@ export default async function CourseDetailPage({
 
             {/* Course Lessons */}
             <Suspense
-              fallback={
-                <div className="flex items-center justify-center py-8">
-                  <Loader2 className="h-6 w-6 animate-spin mr-2" />
-                  <span>Đang tải danh sách bài học...</span>
-                </div>
-              }
+              fallback={<Loading text="Đang tải danh sách bài học..." />}
             >
               <CourseLessons courseId={course.id} courseSlug={course.slug} />
             </Suspense>
@@ -89,7 +84,10 @@ export default async function CourseDetailPage({
             <div className="sticky top-4">
               <Suspense
                 fallback={
-                  <div className="h-64 animate-pulse bg-gray-200 rounded-lg" />
+                  <Loading
+                    variant="card"
+                    text="Đang tải thông tin ghi danh..."
+                  />
                 }
               >
                 <CourseEnrollment

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getCategories } from "@/actions/categories/get-categories";
 import CategoryCourses from "./_components/category-courses";
 import { PageHeader } from "@/components/shared/page-header";
-import { Loader2 } from "lucide-react";
+import { Loading } from "@/components/shared/loading";
 
 interface CategoryPageProps {
   params: Promise<{
@@ -79,14 +79,7 @@ export default async function CategoryPage({
       />
 
       <div className="mt-8">
-        <Suspense
-          fallback={
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin" />
-              <span className="ml-2">Đang tải khóa học...</span>
-            </div>
-          }
-        >
+        <Suspense fallback={<Loading text="Đang tải khóa học..." size="lg" />}>
           <CategoryCourses
             categoryId={category.id}
             searchParams={resolvedSearchParams}

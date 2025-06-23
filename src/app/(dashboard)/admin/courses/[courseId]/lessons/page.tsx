@@ -1,5 +1,8 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 import { requireAdmin } from "@/lib/auth";
+import { PageHeader } from "@/components/shared/page-header";
+import { Loading } from "@/components/shared/loading";
 import LessonManagementContainer from "./_components/lesson-management-container";
 
 interface PageProps {
@@ -17,8 +20,14 @@ export default async function LessonManagementPage({ params }: PageProps) {
   const { courseId } = await params;
 
   return (
-    <div className="container mx-auto py-6">
-      <LessonManagementContainer courseId={courseId} />
+    <div className="space-y-6">
+      <PageHeader
+        title="Quản lý bài học"
+        description="Tạo, chỉnh sửa và sắp xếp các bài học trong khóa học"
+      />
+      <Suspense fallback={<Loading text="Đang tải danh sách bài học..." />}>
+        <LessonManagementContainer courseId={courseId} />
+      </Suspense>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { requireAdmin } from "@/lib/auth";
 import { PageHeader } from "@/components/shared/page-header";
+import { Loading } from "@/components/shared/loading";
 import StudentsManagementContainer from "./_components/students-management-container";
 
 export default async function StudentsPage() {
@@ -14,7 +15,7 @@ export default async function StudentsPage() {
         description="Quản lý học viên và theo dõi tiến độ học tập"
       />
 
-      <Suspense fallback={<div>Đang tải...</div>}>
+      <Suspense fallback={<Loading text="Đang tải danh sách học viên..." />}>
         <StudentsManagementContainer />
       </Suspense>
     </div>

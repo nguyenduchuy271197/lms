@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import CourseGrid from "./_components/course-grid";
 import CourseFilters from "./_components/course-filters";
 import { PageHeader } from "@/components/shared/page-header";
-import { Loader2 } from "lucide-react";
+import { Loading } from "@/components/shared/loading";
 
 export const metadata: Metadata = {
   title: "Khóa học | LMS",
@@ -35,9 +35,7 @@ export default async function CoursePage({ searchParams }: CoursePageProps) {
         {/* Filters Sidebar */}
         <div className="lg:col-span-1">
           <Suspense
-            fallback={
-              <div className="h-64 animate-pulse bg-gray-200 rounded-lg" />
-            }
+            fallback={<Loading variant="card" text="Đang tải bộ lọc..." />}
           >
             <CourseFilters searchParams={resolvedSearchParams} />
           </Suspense>
@@ -46,12 +44,7 @@ export default async function CoursePage({ searchParams }: CoursePageProps) {
         {/* Course Grid */}
         <div className="lg:col-span-3">
           <Suspense
-            fallback={
-              <div className="flex items-center justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin" />
-                <span className="ml-2">Đang tải khóa học...</span>
-              </div>
-            }
+            fallback={<Loading text="Đang tải khóa học..." size="lg" />}
           >
             <CourseGrid searchParams={resolvedSearchParams} />
           </Suspense>
