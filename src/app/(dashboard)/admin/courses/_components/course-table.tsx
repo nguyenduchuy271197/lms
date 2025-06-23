@@ -288,9 +288,7 @@ export default function CourseTable({
                           Chỉnh sửa
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                          <Link
-                            href={`/dashboard/admin/courses/${course.id}/lessons`}
-                          >
+                          <Link href={`/admin/courses/${course.id}/lessons`}>
                             <BookOpen className="mr-2 h-4 w-4" />
                             Quản lý bài học
                           </Link>

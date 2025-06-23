@@ -12,7 +12,7 @@ export default async function CourseManagementPage() {
   await requireAdmin();
 
   return (
-    <div className="container mx-auto py-6">
+    <div>
       <CourseManagementContainer />
     </div>
   );

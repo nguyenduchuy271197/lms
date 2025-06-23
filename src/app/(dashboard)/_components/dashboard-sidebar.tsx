@@ -122,9 +122,9 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
         <div className="space-y-1">
           {navItems.map((item) => {
             const isActive =
-              item.href === "/dashboard/admin/courses" ||
-              item.href === "/dashboard/admin/students" ||
-              item.href === "/dashboard/admin/users"
+              item.href === "/admin/courses" ||
+              item.href === "/admin/students" ||
+              item.href === "/admin/users"
                 ? pathname.startsWith(item.href)
                 : pathname === item.href;
 

@@ -57,7 +57,7 @@ export default function LessonManagementContainer({
     return (
       <div className="text-center py-8">
         <p className="text-muted-foreground">Không tìm thấy khóa học</p>
-        <Link href="/dashboard/admin/courses">
+        <Link href="/admin/courses">
           <Button variant="outline" className="mt-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Quay lại danh sách khóa học
@@ -70,7 +70,7 @@ export default function LessonManagementContainer({
   return (
     <div className="space-y-6">
       <div className="flex items-center space-x-4">
-        <Link href="/dashboard/admin/courses">
+        <Link href="/admin/courses">
           <Button variant="outline" size="sm">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Quay lại
