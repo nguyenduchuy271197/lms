@@ -106,23 +106,16 @@ export default function CourseLessons({
       <CardContent>
         <div className="space-y-3">
           {lessons.map((lesson, index) => (
-            <Link
+            <div
               key={lesson.id}
-              href={
-                lesson.is_published
-                  ? `/courses/${courseSlug}/lessons/${lesson.id}`
-                  : "#"
-              }
-              className={`group flex items-center gap-4 p-4 border rounded-lg hover:shadow-md transition-shadow ${
-                lesson.is_published
-                  ? "cursor-pointer"
-                  : "cursor-not-allowed opacity-60"
+              className={`flex items-center gap-4 p-4 border rounded-lg ${
+                lesson.is_published ? "" : "opacity-60"
               }`}
             >
               {/* Lesson Icon */}
               <div className="flex-shrink-0">
                 {lesson.is_published ? (
-                  <PlayCircle className="h-8 w-8 text-blue-600 group-hover:text-blue-700" />
+                  <PlayCircle className="h-8 w-8 text-blue-600" />
                 ) : (
                   <Lock className="h-8 w-8 text-gray-400" />
                 )}
@@ -131,7 +124,7 @@ export default function CourseLessons({
               {/* Lesson Info */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <h4 className="font-medium text-gray-900 truncate group-hover:text-blue-600">
+                  <h4 className="font-medium text-gray-900 truncate">
                     {index + 1}. {lesson.title}
                   </h4>
                   {!lesson.is_published && (
@@ -165,12 +158,12 @@ export default function CourseLessons({
               {/* Lesson Status/Action */}
               <div className="flex-shrink-0">
                 {lesson.is_published ? (
-                  <div className="text-xs text-gray-500">Nhấn để xem</div>
+                  <div className="text-xs text-gray-500">Có sẵn</div>
                 ) : (
                   <div className="text-xs text-gray-400">Sắp ra mắt</div>
                 )}
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       </CardContent>

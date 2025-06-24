@@ -6,7 +6,6 @@ import { getCourseBySlug } from "@/actions/courses/get-course-by-slug";
 import { requireAuth } from "@/lib/auth";
 import LessonVideo from "./_components/lesson-video";
 import LessonNavigation from "./_components/lesson-navigation";
-import LessonProgress from "./_components/lesson-progress";
 import { Loader2 } from "lucide-react";
 
 interface LessonPageProps {
@@ -70,21 +69,16 @@ export default async function LessonPage({ params }: LessonPageProps) {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-6">
         {/* Course Header */}
-        <div className="mb-6">
-          <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-2">
-            <span>{course.title}</span>
-            <span>•</span>
-            <span>Bài học {lesson.order_index}</span>
+        <div className="mb-4">
+          <h1 className="text-xl font-bold">{lesson.title}</h1>
+          <div className="text-sm text-muted-foreground">
+            {course.title} • Bài học {lesson.order_index}
           </div>
-          <h1 className="text-2xl font-bold">{lesson.title}</h1>
-          {lesson.description && (
-            <p className="text-muted-foreground mt-2">{lesson.description}</p>
-          )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Video Player Area */}
-          <div className="lg:col-span-3 space-y-4">
+          <div className="lg:col-span-2">
             <Suspense
               fallback={
                 <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
@@ -96,16 +90,8 @@ export default async function LessonPage({ params }: LessonPageProps) {
             </Suspense>
           </div>
 
-          {/* Sidebar */}
-          <div className="lg:col-span-1 space-y-4">
-            <Suspense
-              fallback={
-                <div className="bg-muted rounded-lg h-24 animate-pulse" />
-              }
-            >
-              <LessonProgress lesson={lesson} />
-            </Suspense>
-
+          {/* Sidebar - Lesson List */}
+          <div className="lg:col-span-1">
             <Suspense
               fallback={
                 <div className="bg-muted rounded-lg h-64 animate-pulse" />

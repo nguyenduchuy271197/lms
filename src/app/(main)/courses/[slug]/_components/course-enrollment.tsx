@@ -126,7 +126,7 @@ export default function CourseEnrollment({
           return (
             <Button
               onClick={handleContinueLearning}
-              className="w-full"
+              className="w-full cursor-pointer"
               size="lg"
             >
               <Play className="w-4 h-4 mr-2" />
@@ -138,7 +138,7 @@ export default function CourseEnrollment({
             <Button
               onClick={handleContinueLearning}
               variant="outline"
-              className="w-full"
+              className="w-full cursor-pointer"
               size="lg"
             >
               <CheckCircle className="w-4 h-4 mr-2" />

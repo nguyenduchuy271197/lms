@@ -4,12 +4,10 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { CheckCircle, Play } from "lucide-react";
 import { Lesson } from "@/types/custom.types";
 import { useUpdateLessonProgress } from "@/hooks/lesson-progress/use-update-lesson-progress";
 import { useMarkLessonComplete } from "@/hooks/lesson-progress/use-mark-lesson-complete";
-import { formatDuration } from "@/constants/labels";
 
 // Dynamic import để tránh SSR issues
 const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
@@ -38,7 +36,7 @@ interface LessonVideoProps {
 export default function LessonVideo({ lesson }: LessonVideoProps) {
   const playerRef = useRef<ReactPlayerRef>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [played, setPlayed] = useState(0);
+
   const [duration, setDuration] = useState(0);
   const [watchedSeconds, setWatchedSeconds] = useState(0);
   const [hasBeenCompleted, setHasBeenCompleted] = useState(false);
@@ -89,7 +87,6 @@ export default function LessonVideo({ lesson }: LessonVideoProps) {
   const handleProgress = useCallback(
     (state: PlayerProgressState) => {
       const currentSeconds = state.playedSeconds;
-      setPlayed(state.played);
 
       // Update watched seconds (maximum time reached)
       setWatchedSeconds((prevWatchedSeconds) => {
@@ -140,10 +137,6 @@ export default function LessonVideo({ lesson }: LessonVideoProps) {
     }
   }, [hasBeenCompleted, watchedSeconds, lesson.id, markCompleteMutation]);
 
-  const watchedPercentage =
-    duration > 0 ? (watchedSeconds / duration) * 100 : 0;
-  const currentPercentage = played * 100;
-
   if (!lesson.video_url) {
     return (
       <Card>
@@ -159,37 +152,33 @@ export default function LessonVideo({ lesson }: LessonVideoProps) {
 
   return (
     <div className="space-y-4">
-      <Card className="overflow-hidden">
-        <CardContent className="p-0">
-          <div className="relative aspect-video bg-black">
-            <ReactPlayer
-              ref={playerRef}
-              url={lesson.video_url}
-              width="100%"
-              height="100%"
-              playing={isPlaying}
-              controls={true}
-              onPlay={() => setIsPlaying(true)}
-              onPause={() => setIsPlaying(false)}
-              onProgress={handleProgress}
-              onDuration={handleDuration}
-              onEnded={handleEnded}
-              config={{
-                file: {
-                  attributes: {
-                    controlsList: "nodownload",
-                    disablePictureInPicture: false,
-                  },
-                },
-              }}
-            />
-          </div>
-        </CardContent>
-      </Card>
+      <div className="relative aspect-video bg-black">
+        <ReactPlayer
+          ref={playerRef}
+          url={lesson.video_url}
+          width="100%"
+          height="100%"
+          playing={isPlaying}
+          controls={true}
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          onProgress={handleProgress}
+          onDuration={handleDuration}
+          onEnded={handleEnded}
+          config={{
+            file: {
+              attributes: {
+                controlsList: "nodownload",
+                disablePictureInPicture: false,
+              },
+            },
+          }}
+        />
+      </div>
 
       {/* Progress Information */}
       <Card>
-        <CardContent className="p-4">
+        <CardContent>
           <div className="space-y-4">
             {/* Lesson Completion Status */}
             {hasBeenCompleted ? (
@@ -211,39 +200,6 @@ export default function LessonVideo({ lesson }: LessonVideoProps) {
                 </Button>
               </div>
             )}
-
-            {/* Watch Progress */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span>Tiến độ xem tối đa</span>
-                <span className="font-medium">
-                  {Math.round(watchedPercentage)}%
-                </span>
-              </div>
-              <Progress value={watchedPercentage} className="h-2" />
-              <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <span>
-                  Đã xem: {formatDuration(Math.floor(watchedSeconds))}
-                </span>
-                <span>
-                  Tổng:{" "}
-                  {formatDuration(
-                    lesson.duration_seconds || Math.floor(duration)
-                  )}
-                </span>
-              </div>
-            </div>
-
-            {/* Current Progress */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span>Vị trí hiện tại</span>
-                <span className="font-medium">
-                  {Math.round(currentPercentage)}%
-                </span>
-              </div>
-              <Progress value={currentPercentage} className="h-1" />
-            </div>
 
             {/* Learning Tips */}
             {!hasBeenCompleted && (

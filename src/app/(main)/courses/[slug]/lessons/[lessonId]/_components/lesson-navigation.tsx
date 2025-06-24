@@ -96,7 +96,7 @@ export default function LessonNavigation({
     <div className="space-y-4">
       {/* Navigation Controls */}
       <Card>
-        <CardContent className="p-4">
+        <CardContent>
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-medium">Điều hướng</h3>
             <Badge variant="outline">
@@ -139,7 +139,7 @@ export default function LessonNavigation({
       </Card>
 
       {/* Lesson List */}
-      <Card>
+      <Card className="gap-0">
         <CardHeader>
           <CardTitle className="text-lg flex items-center space-x-2">
             <List className="h-5 w-5" />
