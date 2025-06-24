@@ -128,7 +128,7 @@ export default function CourseGrid({ searchParams }: CourseGridProps) {
         <div
           className={
             viewMode === "grid"
-              ? "grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+              ? "grid grid-cols-1 gap-6 md:grid-cols-2"
               : "space-y-4"
           }
         >

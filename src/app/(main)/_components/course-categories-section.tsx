@@ -2,18 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Category, Course } from "@/types/custom.types";
-import { Users, Clock, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import CourseCard from "../courses/_components/course-card";
 
 interface CourseCategoriesSectionProps {
   categoriesWithCourses: Array<{
@@ -41,51 +34,9 @@ export default function CourseCategoriesSection({
     }
 
     return (
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {courses.slice(0, 8).map((course) => (
-          <Card key={course.id} className="hover:shadow-lg transition-shadow">
-            <CardHeader className="p-0">
-              {course.thumbnail_url ? (
-                <div className="aspect-video overflow-hidden rounded-t-lg relative">
-                  <Image
-                    src={course.thumbnail_url}
-                    alt={course.title}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ) : (
-                <div className="aspect-video bg-muted rounded-t-lg flex items-center justify-center">
-                  <span className="text-muted-foreground">
-                    Chưa có hình ảnh
-                  </span>
-                </div>
-              )}
-            </CardHeader>
-            <CardContent className="p-4">
-              <CardTitle className="line-clamp-2 text-lg mb-2">
-                {course.title}
-              </CardTitle>
-              <CardDescription className="line-clamp-2 mb-4">
-                {course.description}
-              </CardDescription>
-
-              <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
-                <div className="flex items-center gap-1">
-                  <Users className="w-4 h-4" />
-                  <span>0 học viên</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Clock className="w-4 h-4" />
-                  <span>Mới cập nhật</span>
-                </div>
-              </div>
-
-              <Button asChild className="w-full">
-                <Link href={`/courses/${course.slug}`}>Xem chi tiết</Link>
-              </Button>
-            </CardContent>
-          </Card>
+          <CourseCard key={course.id} course={course} viewMode="grid" />
         ))}
       </div>
     );
@@ -128,7 +79,7 @@ export default function CourseCategoriesSection({
   const currentCategoryInfo = getCurrentCategoryInfo();
 
   return (
-    <div className="py-20 bg-white">
+    <div className="py-20 bg-gradient-to-b from-gray-50/50 to-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold mb-4">Khóa học theo danh mục</h2>
@@ -143,7 +94,7 @@ export default function CourseCategoriesSection({
             variant={activeCategory === null ? "default" : "outline"}
             onClick={() => setActiveCategory(null)}
             className={cn(
-              "h-auto px-6 py-3 text-sm font-medium",
+              "h-auto px-6 py-3 text-sm font-medium rounded-full",
               activeCategory === null && "shadow-md"
             )}
           >
@@ -155,7 +106,7 @@ export default function CourseCategoriesSection({
               variant={activeCategory === category.id ? "default" : "outline"}
               onClick={() => setActiveCategory(category.id)}
               className={cn(
-                "h-auto px-6 py-3 text-sm font-medium",
+                "h-auto px-6 py-3 text-sm font-medium rounded-full",
                 activeCategory === category.id && "shadow-md"
               )}
             >
@@ -176,7 +127,7 @@ export default function CourseCategoriesSection({
                 {currentCategoryInfo.description}
               </p>
             </div>
-            <Button variant="outline" asChild>
+            <Button variant="outline" asChild className="rounded-full">
               <Link
                 href={
                   currentCategoryInfo.slug
@@ -192,16 +143,6 @@ export default function CourseCategoriesSection({
 
           {/* Courses Grid */}
           {renderCourseGrid(getCurrentCourses())}
-        </div>
-
-        {/* View All Courses Button */}
-        <div className="text-center mt-16">
-          <Button variant="outline" size="lg" asChild>
-            <Link href="/courses">
-              Khám phá tất cả khóa học
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Link>
-          </Button>
         </div>
       </div>
     </div>

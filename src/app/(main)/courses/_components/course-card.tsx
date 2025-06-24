@@ -1,8 +1,6 @@
 import { Course } from "@/types/custom.types";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-
-import { Button } from "@/components/ui/button";
-import { BookOpen, Clock, Users } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { BookOpen } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -19,109 +17,73 @@ export default function CourseCard({
 
   if (viewMode === "list") {
     return (
-      <Card className="flex flex-col sm:flex-row overflow-hidden hover:shadow-md transition-shadow">
-        <div className="relative w-full sm:w-48 h-48 sm:h-32">
+      <Link href={`/courses/${slug}`} className="flex">
+        <Card className="group flex flex-col sm:flex-row overflow-hidden border-0 bg-white shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer py-0">
+          <div className="relative w-full sm:w-48 h-48 sm:h-32 overflow-hidden">
+            {thumbnail_url ? (
+              <Image
+                src={thumbnail_url}
+                alt={title}
+                fill
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+                <BookOpen className="w-8 h-8 text-blue-400" />
+              </div>
+            )}
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300" />
+          </div>
+
+          <CardContent className="flex-1 p-6">
+            <h3 className="font-semibold text-lg leading-tight mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+              {title}
+            </h3>
+
+            {description && (
+              <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+                {description}
+              </p>
+            )}
+          </CardContent>
+        </Card>
+      </Link>
+    );
+  }
+
+  return (
+    <Link href={`/courses/${slug}`}>
+      <Card className="group overflow-hidden border-0 bg-white shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer h-full py-0 gap-2">
+        {/* Thumbnail */}
+        <div className="relative aspect-video overflow-hidden">
           {thumbnail_url ? (
             <Image
               src={thumbnail_url}
               alt={title}
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
-              <BookOpen className="h-8 w-8 text-white" />
+            <div className="w-full h-full bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+              <BookOpen className="w-12 h-12 text-blue-400" />
             </div>
           )}
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300" />
         </div>
 
-        <div className="flex-1 p-6">
-          <div className="flex flex-col h-full">
-            <div className="flex-1">
-              <div className="flex items-start justify-between mb-2">
-                <h3 className="font-semibold text-lg line-clamp-2 hover:text-blue-600">
-                  <Link href={`/courses/${slug}`}>{title}</Link>
-                </h3>
-              </div>
+        {/* Content */}
+        <CardContent className="p-6">
+          <h3 className="font-semibold text-lg leading-tight mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+            {title}
+          </h3>
 
-              {description && (
-                <p className="text-gray-600 text-sm line-clamp-2 mb-3">
-                  {description}
-                </p>
-              )}
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4 text-sm text-gray-500">
-                <div className="flex items-center gap-1">
-                  <BookOpen className="h-4 w-4" />
-                  <span>0 bài học</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Users className="h-4 w-4" />
-                  <span>0 học viên</span>
-                </div>
-              </div>
-
-              <Button size="sm" asChild>
-                <Link href={`/courses/${slug}`}>Xem chi tiết</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
+          {description && (
+            <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+              {description}
+            </p>
+          )}
+        </CardContent>
       </Card>
-    );
-  }
-
-  return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-      <div className="relative h-48">
-        {thumbnail_url ? (
-          <Image
-            src={thumbnail_url}
-            alt={title}
-            fill
-            className="object-cover"
-          />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
-            <BookOpen className="h-12 w-12 text-white" />
-          </div>
-        )}
-      </div>
-
-      <CardContent className="p-4">
-        <h3 className="font-semibold text-lg mb-2 line-clamp-2 hover:text-blue-600">
-          <Link href={`/courses/${slug}`}>{title}</Link>
-        </h3>
-
-        {description && (
-          <p className="text-gray-600 text-sm line-clamp-3 mb-3">
-            {description}
-          </p>
-        )}
-
-        <div className="flex items-center gap-4 text-sm text-gray-500">
-          <div className="flex items-center gap-1">
-            <BookOpen className="h-4 w-4" />
-            <span>0 bài học</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Clock className="h-4 w-4" />
-            <span>0h 0m</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Users className="h-4 w-4" />
-            <span>0 học viên</span>
-          </div>
-        </div>
-      </CardContent>
-
-      <CardFooter className="p-4 pt-0">
-        <Button className="w-full" asChild>
-          <Link href={`/courses/${slug}`}>Xem chi tiết</Link>
-        </Button>
-      </CardFooter>
-    </Card>
+    </Link>
   );
 }
