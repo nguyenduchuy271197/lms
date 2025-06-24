@@ -185,7 +185,7 @@ function LessonItem({ lesson, courseSlug, isActive }: LessonItemProps) {
   // Get the latest progress record
   const progress = progressArray?.[0];
 
-  const isCompleted = progress?.completed_at !== null;
+  const isCompleted = progress && progress.completed_at != null;
   const isLocked = false; // Would implement based on course access rules
 
   const watchedSeconds = progress?.watched_seconds || 0;

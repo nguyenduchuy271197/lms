@@ -15,6 +15,7 @@ import { BookOpen, Play, CheckCircle, Calendar } from "lucide-react";
 import { EnrollmentWithDetails } from "@/types/custom.types";
 import { LABELS } from "@/constants/labels";
 import { useLessonsByCourse } from "@/hooks/lessons/use-lessons-by-course";
+import { useCourseProgress } from "@/hooks/lesson-progress/use-course-progress";
 
 interface MyCourseCardProps {
   enrollment: EnrollmentWithDetails;
@@ -29,6 +30,12 @@ export default function MyCourseCard({ enrollment }: MyCourseCardProps) {
     { enabled: !!course?.id }
   );
 
+  // Get course progress
+  const { data: progress } = useCourseProgress(
+    { course_id: course?.id || "" },
+    !!course?.id
+  );
+
   if (!course) {
     return null;
   }
@@ -37,8 +44,16 @@ export default function MyCourseCard({ enrollment }: MyCourseCardProps) {
   const getContinueLessonId = () => {
     if (!lessons || lessons.length === 0) return null;
 
-    // Find first published lesson - simplified for now
-    // TODO: In the future, find the first incomplete lesson
+    // If we have progress data and the course is completed, go to first lesson for review
+    if (progress && progress.progress_percentage === 100) {
+      const firstPublishedLesson = lessons.find(
+        (lesson) => lesson.is_published
+      );
+      return firstPublishedLesson?.id || null;
+    }
+
+    // For active courses, find the first uncompleted lesson
+    // For now, just return first published lesson (can be improved with lesson progress data)
     const firstPublishedLesson = lessons.find((lesson) => lesson.is_published);
     return firstPublishedLesson?.id || null;
   };
@@ -147,14 +162,18 @@ export default function MyCourseCard({ enrollment }: MyCourseCardProps) {
           )}
         </div>
 
-        {/* Progress - TODO: Implement progress tracking */}
-        {enrollment.status === "active" && (
+        {/* Progress */}
+        {enrollment.status === "active" && progress && (
           <div className="space-y-2">
             <div className="flex justify-between text-xs text-muted-foreground">
               <span>Tiến độ</span>
-              <span>0%</span>
+              <span>{progress.progress_percentage}%</span>
             </div>
-            <Progress value={0} className="h-2" />
+            <Progress value={progress.progress_percentage} className="h-2" />
+            <div className="text-xs text-muted-foreground">
+              {progress.completed_lessons}/{progress.total_lessons} bài học hoàn
+              thành
+            </div>
           </div>
         )}
 

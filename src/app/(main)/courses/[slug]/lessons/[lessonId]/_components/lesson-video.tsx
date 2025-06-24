@@ -35,7 +35,7 @@ interface LessonVideoProps {
 
 export default function LessonVideo({ lesson }: LessonVideoProps) {
   const playerRef = useRef<ReactPlayerRef>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
 
   const [duration, setDuration] = useState(0);
   const [watchedSeconds, setWatchedSeconds] = useState(0);
@@ -51,6 +51,13 @@ export default function LessonVideo({ lesson }: LessonVideoProps) {
   // Update refs when state changes
   watchedSecondsRef.current = watchedSeconds;
   hasBeenCompletedRef.current = hasBeenCompleted;
+
+  // Auto-play when lesson changes
+  useEffect(() => {
+    if (lesson.video_url) {
+      setIsPlaying(true);
+    }
+  }, [lesson.id, lesson.video_url]);
 
   // Create a stable function for saving progress
   const saveProgress = useCallback(() => {
