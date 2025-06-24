@@ -49,13 +49,8 @@ export default function LessonVideo({ lesson }: LessonVideoProps) {
   const markCompleteMutation = useMarkLessonComplete();
 
   // Update refs when state changes
-  useEffect(() => {
-    watchedSecondsRef.current = watchedSeconds;
-  }, [watchedSeconds]);
-
-  useEffect(() => {
-    hasBeenCompletedRef.current = hasBeenCompleted;
-  }, [hasBeenCompleted]);
+  watchedSecondsRef.current = watchedSeconds;
+  hasBeenCompletedRef.current = hasBeenCompleted;
 
   // Create a stable function for saving progress
   const saveProgress = useCallback(() => {
@@ -68,7 +63,7 @@ export default function LessonVideo({ lesson }: LessonVideoProps) {
           : null,
       });
     }
-  }, [lesson.id, updateProgressMutation]);
+  }, [lesson.id]);
 
   // Save progress periodically
   useEffect(() => {
@@ -110,7 +105,7 @@ export default function LessonVideo({ lesson }: LessonVideoProps) {
         });
       }
     },
-    [duration, lesson.id, markCompleteMutation]
+    [duration, lesson.id]
   );
 
   const handleDuration = useCallback((duration: number) => {
@@ -125,7 +120,7 @@ export default function LessonVideo({ lesson }: LessonVideoProps) {
         watched_seconds: Math.floor(duration),
       });
     }
-  }, [duration, lesson.id, markCompleteMutation]);
+  }, [duration, lesson.id]);
 
   const handleManualComplete = useCallback(() => {
     if (!hasBeenCompleted) {
@@ -135,7 +130,7 @@ export default function LessonVideo({ lesson }: LessonVideoProps) {
         watched_seconds: Math.floor(watchedSeconds),
       });
     }
-  }, [hasBeenCompleted, watchedSeconds, lesson.id, markCompleteMutation]);
+  }, [hasBeenCompleted, watchedSeconds, lesson.id]);
 
   if (!lesson.video_url) {
     return (
