@@ -74,13 +74,6 @@ export default function UserNav({ user }: UserNavProps) {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem asChild>
-          <Link href="/dashboard/profile">
-            <User className="mr-2 h-4 w-4" />
-            <span>Hồ sơ cá nhân</span>
-          </Link>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem asChild>
           <Link href={user.profile.role === "admin" ? "/admin" : "/dashboard"}>
             <LayoutDashboard className="mr-2 h-4 w-4" />
             <span>
@@ -97,6 +90,13 @@ export default function UserNav({ user }: UserNavProps) {
             </Link>
           </DropdownMenuItem>
         )}
+
+        <DropdownMenuItem asChild>
+          <Link href="/dashboard/profile">
+            <User className="mr-2 h-4 w-4" />
+            <span>Hồ sơ cá nhân</span>
+          </Link>
+        </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
           <Link href="/dashboard/settings">
