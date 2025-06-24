@@ -11,23 +11,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import {
-  BookOpen,
-  Play,
-  CheckCircle,
-  XCircle,
-  MoreHorizontal,
-  Calendar,
-} from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { BookOpen, Play, CheckCircle, Calendar } from "lucide-react";
 import { EnrollmentWithDetails } from "@/types/custom.types";
 import { LABELS } from "@/constants/labels";
-import { useUpdateEnrollmentStatus } from "@/hooks/enrollments/use-update-enrollment-status";
 import { useLessonsByCourse } from "@/hooks/lessons/use-lessons-by-course";
 
 interface MyCourseCardProps {
@@ -35,8 +21,6 @@ interface MyCourseCardProps {
 }
 
 export default function MyCourseCard({ enrollment }: MyCourseCardProps) {
-  const updateEnrollmentStatus = useUpdateEnrollmentStatus();
-
   const course = enrollment.courses;
 
   // Get lessons to find next lesson to learn
@@ -59,17 +43,6 @@ export default function MyCourseCard({ enrollment }: MyCourseCardProps) {
     return firstPublishedLesson?.id || null;
   };
 
-  const handleStatusUpdate = async (newStatus: "active" | "dropped") => {
-    try {
-      await updateEnrollmentStatus.mutateAsync({
-        id: enrollment.id,
-        status: newStatus,
-      });
-    } catch {
-      // Error handling is done in the hook
-    }
-  };
-
   const getStatusBadge = () => {
     switch (enrollment.status) {
       case "active":
@@ -84,13 +57,6 @@ export default function MyCourseCard({ enrollment }: MyCourseCardProps) {
           <Badge variant="default" className="bg-green-100 text-green-800">
             <CheckCircle className="w-3 h-3 mr-1" />
             {LABELS.ENROLLMENT_STATUS.completed}
-          </Badge>
-        );
-      case "dropped":
-        return (
-          <Badge variant="secondary" className="bg-gray-100 text-gray-800">
-            <XCircle className="w-3 h-3 mr-1" />
-            {LABELS.ENROLLMENT_STATUS.dropped}
           </Badge>
         );
       default:
@@ -124,19 +90,6 @@ export default function MyCourseCard({ enrollment }: MyCourseCardProps) {
             </Link>
           </Button>
         );
-      case "dropped":
-        return (
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full"
-            onClick={() => handleStatusUpdate("active")}
-            disabled={updateEnrollmentStatus.isPending}
-          >
-            <Play className="w-4 h-4 mr-2" />
-            Học lại
-          </Button>
-        );
       default:
         return null;
     }
@@ -154,26 +107,6 @@ export default function MyCourseCard({ enrollment }: MyCourseCardProps) {
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between">
           {getStatusBadge()}
-
-          {enrollment.status === "active" && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  onClick={() => handleStatusUpdate("dropped")}
-                  disabled={updateEnrollmentStatus.isPending}
-                  className="text-destructive focus:text-destructive"
-                >
-                  <XCircle className="w-4 h-4 mr-2" />
-                  Bỏ học
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
         </div>
       </CardHeader>
 

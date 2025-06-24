@@ -137,23 +137,6 @@ export default function CourseEnrollment({
               Đã hoàn thành
             </Button>
           );
-        case "dropped":
-          return (
-            <Button
-              onClick={handleEnrollment}
-              variant="outline"
-              className="w-full"
-              size="lg"
-              disabled={isEnrolling || createEnrollmentMutation.isPending}
-            >
-              {isEnrolling || createEnrollmentMutation.isPending ? (
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              ) : (
-                <Play className="w-4 h-4 mr-2" />
-              )}
-              Học lại
-            </Button>
-          );
         default:
           return null;
       }
@@ -194,16 +177,11 @@ export default function CourseEnrollment({
               <span className="text-sm font-medium">Trạng thái:</span>
               <Badge
                 variant={
-                  enrollmentCheck.status === "active"
-                    ? "default"
-                    : enrollmentCheck.status === "completed"
-                    ? "secondary"
-                    : "outline"
+                  enrollmentCheck.status === "active" ? "default" : "secondary"
                 }
               >
                 {enrollmentCheck.status === "active" && "Đang học"}
                 {enrollmentCheck.status === "completed" && "Đã hoàn thành"}
-                {enrollmentCheck.status === "dropped" && "Đã bỏ học"}
               </Badge>
             </div>
           </div>
