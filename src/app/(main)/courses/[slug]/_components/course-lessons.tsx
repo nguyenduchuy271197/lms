@@ -11,11 +11,13 @@ import Link from "next/link";
 interface CourseLessonsProps {
   courseId: string;
   courseSlug: string;
+  userId?: string;
 }
 
 export default function CourseLessons({
   courseId,
   courseSlug,
+  userId,
 }: CourseLessonsProps) {
   const {
     data: lessons = [],
@@ -90,12 +92,14 @@ export default function CourseLessons({
             <div className="text-sm text-gray-600">
               {lessons.length} bài học • {formatDuration(totalDuration)}
             </div>
-            <Button asChild variant="outline" size="sm">
-              <Link href={`/courses/${courseSlug}/progress`}>
-                <TrendingUp className="h-4 w-4 mr-2" />
-                Xem tiến độ
-              </Link>
-            </Button>
+            {userId && (
+              <Button asChild variant="outline" size="sm">
+                <Link href={`/courses/${courseSlug}/progress`}>
+                  <TrendingUp className="h-4 w-4 mr-2" />
+                  Xem tiến độ
+                </Link>
+              </Button>
+            )}
           </div>
         </div>
       </CardHeader>

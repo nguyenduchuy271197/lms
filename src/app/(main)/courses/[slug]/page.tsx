@@ -75,7 +75,11 @@ export default async function CourseDetailPage({
             <Suspense
               fallback={<Loading text="Đang tải danh sách bài học..." />}
             >
-              <CourseLessons courseId={course.id} courseSlug={course.slug} />
+              <CourseLessons
+                courseId={course.id}
+                courseSlug={course.slug}
+                userId={userId || undefined}
+              />
             </Suspense>
           </div>
 
