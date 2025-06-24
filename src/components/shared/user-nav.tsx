@@ -98,13 +98,6 @@ export default function UserNav({ user }: UserNavProps) {
           </Link>
         </DropdownMenuItem>
 
-        <DropdownMenuItem asChild>
-          <Link href="/dashboard/settings">
-            <Settings className="mr-2 h-4 w-4" />
-            <span>Cài đặt</span>
-          </Link>
-        </DropdownMenuItem>
-
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout} disabled={logout.isPending}>
           <LogOut className="mr-2 h-4 w-4" />

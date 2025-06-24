@@ -123,7 +123,6 @@ export default function ProfileForm({ user }: ProfileFormProps) {
             <AvatarImage
               src={displayAvatarUrl || ""}
               alt={user.profile.full_name || ""}
-              className="object-cover"
             />
             <AvatarFallback className="text-lg">
               {getUserInitials(user.profile.full_name)}
