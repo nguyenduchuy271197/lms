@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { BookOpen, LayoutDashboard } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import Link from "next/link";
 import { getServerUser } from "@/lib/auth";
 import UserNav from "@/components/shared/user-nav";
