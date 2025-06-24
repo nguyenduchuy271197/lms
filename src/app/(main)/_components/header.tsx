@@ -19,20 +19,7 @@ export default async function Header() {
 
         <div className="flex items-center space-x-2">
           {user ? (
-            <>
-              {/* Dashboard Link for authenticated users */}
-              <Button variant="ghost" asChild>
-                <Link
-                  href={user.profile.role === "admin" ? "/admin" : "/dashboard"}
-                >
-                  <LayoutDashboard className="w-4 h-4 mr-2" />
-                  {user.profile.role === "admin" ? "Quản trị" : "Dashboard"}
-                </Link>
-              </Button>
-
-              {/* User Menu */}
-              <UserNav user={user} />
-            </>
+            <UserNav user={user} />
           ) : (
             <>
               {/* Login/Register buttons for guests */}

@@ -46,7 +46,7 @@ export async function requireAuth(): Promise<AuthUser> {
   const user = await getServerUser()
   
   if (!user) {
-    redirect('/auth/login')
+    redirect('/login')
   }
   
   return user

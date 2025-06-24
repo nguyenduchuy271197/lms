@@ -132,9 +132,6 @@ export function ProfileForm({ user }: ProfileFormProps) {
               {getUserRoleLabel(user.profile.role)}
             </Badge>
           </div>
-          <p className="text-xs text-muted-foreground">
-            Liên hệ quản trị viên để thay đổi vai trò
-          </p>
         </div>
 
         <div className="space-y-2">
