@@ -74,7 +74,7 @@ export default function MyCourseCard({ enrollment }: MyCourseCardProps) {
     switch (enrollment.status) {
       case "active":
         return (
-          <Button asChild size="sm" className="w-full">
+          <Button asChild className="w-full">
             <Link href={continueHref}>
               <Play className="w-4 h-4 mr-2" />
               Tiếp tục học
@@ -83,7 +83,7 @@ export default function MyCourseCard({ enrollment }: MyCourseCardProps) {
         );
       case "completed":
         return (
-          <Button asChild variant="outline" size="sm" className="w-full">
+          <Button asChild variant="outline" className="w-full">
             <Link href={continueHref}>
               <BookOpen className="w-4 h-4 mr-2" />
               Xem lại
@@ -103,8 +103,8 @@ export default function MyCourseCard({ enrollment }: MyCourseCardProps) {
     : null;
 
   return (
-    <Card className="group hover:shadow-md transition-shadow">
-      <CardHeader className="pb-2">
+    <Card className="group hover:shadow-md transition-shadow gap-4">
+      <CardHeader>
         <div className="flex items-start justify-between">
           {getStatusBadge()}
         </div>

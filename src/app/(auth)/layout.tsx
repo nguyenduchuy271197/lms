@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getServerUser } from "@/lib/auth";
+import AuthHeader from "./_components/auth-header";
 
 export default async function AuthLayout({
   children,
@@ -17,5 +18,10 @@ export default async function AuthLayout({
     }
   }
 
-  return <div className="min-h-screen">{children}</div>;
+  return (
+    <div className="min-h-screen">
+      <AuthHeader />
+      <div className="flex-1">{children}</div>
+    </div>
+  );
 }
