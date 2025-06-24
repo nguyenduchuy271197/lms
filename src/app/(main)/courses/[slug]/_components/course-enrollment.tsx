@@ -24,7 +24,9 @@ import {
 import { Course } from "@/types/custom.types";
 import { useCheckEnrollment } from "@/hooks/enrollments/use-check-enrollment";
 import { useCreateEnrollment } from "@/hooks/enrollments/use-create-enrollment";
+import { useEnrollmentsByCourse } from "@/hooks/enrollments/use-enrollments-by-course";
 import { useLessonsByCourse } from "@/hooks/lessons/use-lessons-by-course";
+import { formatDuration } from "@/constants/labels";
 import { toast } from "sonner";
 
 interface CourseEnrollmentProps {
@@ -47,6 +49,12 @@ export default function CourseEnrollment({
 
   // Get lessons to find first lesson
   const { data: lessons } = useLessonsByCourse({ course_id: course.id });
+
+  // Get enrollments for stats
+  const { data: enrollments } = useEnrollmentsByCourse({
+    course_id: course.id,
+    enabled: true,
+  });
 
   const createEnrollmentMutation = useCreateEnrollment();
 
@@ -194,18 +202,24 @@ export default function CourseEnrollment({
               <Users className="w-4 h-4" />
               Học viên
             </span>
-            <span className="font-medium">0</span>
+            <span className="font-medium">
+              {enrollments?.filter(
+                (e) => e.status === "active" || e.status === "completed"
+              ).length || 0}
+            </span>
           </div>
 
           <Separator />
 
-          {/* TODO: Add lesson count when lessons are available */}
           <div className="flex items-center justify-between text-sm">
             <span className="flex items-center gap-2 text-muted-foreground">
               <BookOpen className="w-4 h-4" />
               Bài học
             </span>
-            <span className="font-medium">Sắp cập nhật</span>
+            <span className="font-medium">
+              {lessons?.filter((lesson) => lesson.is_published).length || 0} bài
+              học
+            </span>
           </div>
 
           <Separator />
@@ -215,7 +229,18 @@ export default function CourseEnrollment({
               <Clock className="w-4 h-4" />
               Thời lượng
             </span>
-            <span className="font-medium">Sắp cập nhật</span>
+            <span className="font-medium">
+              {lessons && lessons.length > 0
+                ? formatDuration(
+                    lessons
+                      .filter((lesson) => lesson.is_published)
+                      .reduce(
+                        (sum, lesson) => sum + (lesson.duration_seconds || 0),
+                        0
+                      )
+                  )
+                : "Chưa có bài học"}
+            </span>
           </div>
         </div>
 

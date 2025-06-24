@@ -1,14 +1,40 @@
-import { Course } from "@/types/custom.types";
+"use client";
 
-import { BookOpen, Clock, Users, Star } from "lucide-react";
+import { Course } from "@/types/custom.types";
+import { BookOpen, Clock, Users } from "lucide-react";
 import Image from "next/image";
+import { useLessonsByCourse } from "@/hooks/lessons/use-lessons-by-course";
+import { useEnrollmentsByCourse } from "@/hooks/enrollments/use-enrollments-by-course";
+import { formatDuration } from "@/constants/labels";
 
 interface CourseHeroProps {
   course: Course;
 }
 
 export default function CourseHero({ course }: CourseHeroProps) {
-  const { title, description, thumbnail_url } = course;
+  const { title, description, thumbnail_url, id } = course;
+
+  // Get lessons data
+  const { data: lessons } = useLessonsByCourse({ course_id: id });
+
+  // Get enrollments data
+  const { data: enrollments } = useEnrollmentsByCourse({
+    course_id: id,
+    enabled: !!id,
+  });
+
+  // Calculate stats
+  const publishedLessons =
+    lessons?.filter((lesson) => lesson.is_published) || [];
+  const totalLessons = publishedLessons.length;
+  const totalDurationSeconds = publishedLessons.reduce(
+    (sum, lesson) => sum + (lesson.duration_seconds || 0),
+    0
+  );
+  const activeEnrollments =
+    enrollments?.filter(
+      (e) => e.status === "active" || e.status === "completed"
+    ).length || 0;
 
   return (
     <div className="relative bg-gradient-to-r from-blue-900 to-purple-900 text-white">
@@ -32,6 +58,22 @@ export default function CourseHero({ course }: CourseHeroProps) {
                 {description}
               </p>
             )}
+
+            {/* Course Stats */}
+            <div className="flex flex-wrap items-center gap-6 text-sm">
+              <div className="flex items-center gap-2">
+                <BookOpen className="h-5 w-5" />
+                <span>{totalLessons} bài học</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Clock className="h-5 w-5" />
+                <span>{formatDuration(totalDurationSeconds)}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Users className="h-5 w-5" />
+                <span>{activeEnrollments} học viên</span>
+              </div>
+            </div>
           </div>
 
           {/* Course Thumbnail */}
