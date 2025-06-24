@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
   CardContent,
@@ -14,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Category, Course } from "@/types/custom.types";
 import { Users, Clock, ArrowRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface CourseCategoriesSectionProps {
   categoriesWithCourses: Array<{
@@ -27,7 +27,7 @@ export default function CourseCategoriesSection({
   categoriesWithCourses,
   allCourses,
 }: CourseCategoriesSectionProps) {
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   const renderCourseGrid = (courses: Course[]) => {
     if (courses.length === 0) {
@@ -91,6 +91,42 @@ export default function CourseCategoriesSection({
     );
   };
 
+  // Get current courses based on active category
+  const getCurrentCourses = () => {
+    if (activeCategory === null) {
+      return allCourses;
+    }
+
+    const categoryData = categoriesWithCourses.find(
+      ({ category }) => category.id === activeCategory
+    );
+    return categoryData?.courses || [];
+  };
+
+  // Get current category info
+  const getCurrentCategoryInfo = () => {
+    if (activeCategory === null) {
+      return {
+        name: "Tất cả khóa học",
+        description: "Khám phá toàn bộ khóa học có sẵn trên nền tảng",
+        slug: null,
+      };
+    }
+
+    const categoryData = categoriesWithCourses.find(
+      ({ category }) => category.id === activeCategory
+    );
+    return {
+      name: categoryData?.category.name || "",
+      description:
+        categoryData?.category.description ||
+        `Khám phá các khóa học về ${categoryData?.category.name}`,
+      slug: categoryData?.category.slug || null,
+    };
+  };
+
+  const currentCategoryInfo = getCurrentCategoryInfo();
+
   return (
     <div className="py-20 bg-white">
       <div className="container mx-auto px-4">
@@ -101,68 +137,62 @@ export default function CourseCategoriesSection({
           </p>
         </div>
 
-        {/* Category Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-7 mb-8">
-            <TabsTrigger value="all" className="text-sm">
-              Tất cả
-            </TabsTrigger>
-            {categoriesWithCourses.map(({ category }) => (
-              <TabsTrigger
-                key={category.id}
-                value={category.id}
-                className="text-sm"
-              >
-                {category.name}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
-          {/* All Courses Tab */}
-          <TabsContent value="all" className="space-y-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-2xl font-bold mb-2">Tất cả khóa học</h3>
-                <p className="text-muted-foreground">
-                  Khám phá toàn bộ khóa học có sẵn trên nền tảng
-                </p>
-              </div>
-              <Button variant="outline" asChild>
-                <Link href="/courses">
-                  Xem tất cả
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Link>
-              </Button>
-            </div>
-            {renderCourseGrid(allCourses)}
-          </TabsContent>
-
-          {/* Category Tabs */}
-          {categoriesWithCourses.map(({ category, courses }) => (
-            <TabsContent
+        {/* Category Filter Buttons */}
+        <div className="flex flex-wrap gap-3 justify-center mb-12">
+          <Button
+            variant={activeCategory === null ? "default" : "outline"}
+            onClick={() => setActiveCategory(null)}
+            className={cn(
+              "h-auto px-6 py-3 text-sm font-medium",
+              activeCategory === null && "shadow-md"
+            )}
+          >
+            Tất cả
+          </Button>
+          {categoriesWithCourses.map(({ category }) => (
+            <Button
               key={category.id}
-              value={category.id}
-              className="space-y-8"
+              variant={activeCategory === category.id ? "default" : "outline"}
+              onClick={() => setActiveCategory(category.id)}
+              className={cn(
+                "h-auto px-6 py-3 text-sm font-medium",
+                activeCategory === category.id && "shadow-md"
+              )}
             >
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-2xl font-bold mb-2">{category.name}</h3>
-                  <p className="text-muted-foreground">
-                    {category.description ||
-                      `Khám phá các khóa học về ${category.name}`}
-                  </p>
-                </div>
-                <Button variant="outline" asChild>
-                  <Link href={`/categories/${category.slug}`}>
-                    Xem tất cả
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Link>
-                </Button>
-              </div>
-              {renderCourseGrid(courses)}
-            </TabsContent>
+              {category.name}
+            </Button>
           ))}
-        </Tabs>
+        </div>
+
+        {/* Current Category Content */}
+        <div className="space-y-8">
+          {/* Category Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-2xl font-bold mb-2">
+                {currentCategoryInfo.name}
+              </h3>
+              <p className="text-muted-foreground">
+                {currentCategoryInfo.description}
+              </p>
+            </div>
+            <Button variant="outline" asChild>
+              <Link
+                href={
+                  currentCategoryInfo.slug
+                    ? `/categories/${currentCategoryInfo.slug}`
+                    : "/courses"
+                }
+              >
+                Xem tất cả
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Link>
+            </Button>
+          </div>
+
+          {/* Courses Grid */}
+          {renderCourseGrid(getCurrentCourses())}
+        </div>
 
         {/* View All Courses Button */}
         <div className="text-center mt-16">
