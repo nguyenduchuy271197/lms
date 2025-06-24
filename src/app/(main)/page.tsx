@@ -1,16 +1,35 @@
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { BookOpen, Users, Clock, Award } from "lucide-react";
 import Link from "next/link";
-import Header from "./_components/header";
-import Footer from "./_components/footer";
+import { getCategories } from "@/actions/categories/get-categories";
+import { getCourses } from "@/actions/courses/get-courses";
+import { Loading } from "@/components/shared/loading";
+import CourseCategoriesSection from "./_components/course-categories-section";
 
 export default async function HomePage() {
+  // Fetch categories and courses server-side
+  const [categoriesResult, coursesResult] = await Promise.all([
+    getCategories(),
+    getCourses(),
+  ]);
+
+  const categories = categoriesResult.success
+    ? categoriesResult.data.slice(0, 6)
+    : [];
+  const allCourses = coursesResult.success ? coursesResult.data : [];
+
+  // Group courses by category
+  const categoriesWithCourses = categories.map((category) => {
+    const courses = allCourses
+      .filter((course) => course.category_id === category.id)
+      .slice(0, 4); // Limit to 4 courses per category
+
+    return {
+      category,
+      courses,
+    };
+  });
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Hero Section */}
@@ -35,68 +54,21 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">Tại sao chọn chúng tôi?</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Chúng tôi cung cấp trải nghiệm học tập toàn diện với những tính
-              năng hiện đại
-            </p>
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            <Card className="text-center">
-              <CardHeader>
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <BookOpen className="w-6 h-6 text-blue-600" />
-                </div>
-                <CardTitle>Khóa học đa dạng</CardTitle>
-                <CardDescription>
-                  Hàng ngàn khóa học từ cơ bản đến nâng cao
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="text-center">
-              <CardHeader>
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Users className="w-6 h-6 text-green-600" />
-                </div>
-                <CardTitle>Cộng đồng học tập</CardTitle>
-                <CardDescription>
-                  Kết nối với hàng triệu học viên trên toàn thế giới
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="text-center">
-              <CardHeader>
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Clock className="w-6 h-6 text-purple-600" />
-                </div>
-                <CardTitle>Học mọi lúc mọi nơi</CardTitle>
-                <CardDescription>
-                  Truy cập khóa học 24/7 trên mọi thiết bị
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="text-center">
-              <CardHeader>
-                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Award className="w-6 h-6 text-orange-600" />
-                </div>
-                <CardTitle>Chứng chí uy tín</CardTitle>
-                <CardDescription>
-                  Nhận chứng chỉ được công nhận sau khi hoàn thành
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
-        </div>
-      </section>
+      {/* Course Categories Section */}
+      <Suspense
+        fallback={
+          <Loading
+            text="Đang tải danh mục khóa học..."
+            size="lg"
+            className="py-20"
+          />
+        }
+      >
+        <CourseCategoriesSection
+          categoriesWithCourses={categoriesWithCourses}
+          allCourses={allCourses}
+        />
+      </Suspense>
 
       {/* CTA Section */}
       <section className="py-20">
