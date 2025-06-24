@@ -66,12 +66,15 @@ export function useUploadAvatarWithPreview() {
     onSuccess: (data, variables) => {
       toast.success("Avatar đã được tải lên thành công");
       
-      // Invalidate relevant queries
+      // Invalidate and refetch all relevant queries
       queryClient.invalidateQueries({ 
         queryKey: ["profile", variables.params.userId] 
       });
       queryClient.invalidateQueries({ 
         queryKey: ["user", variables.params.userId] 
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: ["profile"] 
       });
       queryClient.invalidateQueries({ 
         queryKey: ["profiles"] 
@@ -84,15 +87,12 @@ export function useUploadAvatarWithPreview() {
 }
 
 // Hook for current user avatar upload
-export function useUploadMyAvatar() {
+export function useUploadMyAvatar(userId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
-      // Get current user ID from auth context or query
-      const userIdFromAuth = "current-user-id"; // This would come from auth context
-      
-      const result = await uploadAvatar({ userId: userIdFromAuth }, formData);
+      const result = await uploadAvatar({ userId }, formData);
       if (!result.success) {
         throw new Error(result.error);
       }
@@ -102,6 +102,12 @@ export function useUploadMyAvatar() {
       toast.success("Avatar của bạn đã được cập nhật thành công");
       
       // Invalidate current user queries
+      queryClient.invalidateQueries({ 
+        queryKey: ["profile", userId] 
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: ["user", userId] 
+      });
       queryClient.invalidateQueries({ 
         queryKey: ["profile"] 
       });

@@ -320,14 +320,14 @@ CREATE POLICY "Admins can view all progress" ON lesson_progress
     FOR SELECT USING (current_user_is_admin());
 
 -- Create storage bucket for course materials
-INSERT INTO storage.buckets (id, name) 
-VALUES ('course-videos', 'course-videos');
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('course-videos', 'course-videos', false);
 
-INSERT INTO storage.buckets (id, name) 
-VALUES ('course-thumbnails', 'course-thumbnails');
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('course-thumbnails', 'course-thumbnails', true);
 
-INSERT INTO storage.buckets (id, name) 
-VALUES ('user-avatars', 'user-avatars');
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('user-avatars', 'user-avatars', true);
 
 -- Storage policies for course videos (private)
 CREATE POLICY "Enrolled students can view course videos" ON storage.objects
