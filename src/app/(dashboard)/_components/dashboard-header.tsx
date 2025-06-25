@@ -18,11 +18,6 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
         </div>
 
         <div className="flex items-center space-x-4">
-          {/* Notifications */}
-          <Button variant="ghost" size="icon">
-            <Bell className="h-4 w-4" />
-          </Button>
-
           {/* User Menu */}
           <UserNav user={user} />
         </div>
