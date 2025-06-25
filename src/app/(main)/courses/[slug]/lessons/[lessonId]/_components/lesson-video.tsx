@@ -52,10 +52,23 @@ export default function LessonVideo({ lesson }: LessonVideoProps) {
   watchedSecondsRef.current = watchedSeconds;
   hasBeenCompletedRef.current = hasBeenCompleted;
 
-  // Auto-play when lesson changes
+  // Auto-play when lesson changes and cleanup previous lesson
   useEffect(() => {
+    // Stop previous video first
+    setIsPlaying(false);
+
+    // Reset states for new lesson
+    setWatchedSeconds(0);
+    setHasBeenCompleted(false);
+    setDuration(0);
+
+    // Auto-play new lesson after a short delay
     if (lesson.video_url) {
-      setIsPlaying(true);
+      const timer = setTimeout(() => {
+        setIsPlaying(true);
+      }, 100);
+
+      return () => clearTimeout(timer);
     }
   }, [lesson.id, lesson.video_url]);
 
@@ -78,9 +91,12 @@ export default function LessonVideo({ lesson }: LessonVideoProps) {
     return () => clearInterval(interval);
   }, [saveProgress]);
 
-  // Save progress on unmount
+  // Save progress and stop video on unmount
   useEffect(() => {
     return () => {
+      // Stop video playback
+      setIsPlaying(false);
+      // Save progress before cleanup
       saveProgress();
     };
   }, [saveProgress]);
@@ -157,6 +173,7 @@ export default function LessonVideo({ lesson }: LessonVideoProps) {
       <div className="relative aspect-video bg-black">
         <ReactPlayer
           ref={playerRef}
+          key={lesson.id} // Force re-render when lesson changes
           url={lesson.video_url}
           width="100%"
           height="100%"
