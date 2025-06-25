@@ -68,7 +68,7 @@ export default function CourseEnrollment({
   const handleEnrollment = async () => {
     if (!userId) {
       toast.error("Vui lòng đăng nhập để đăng ký khóa học");
-      router.push("/login");
+      router.push("/login?redirectTo=/courses/" + course.slug);
       return;
     }
 

@@ -23,7 +23,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function LoginPage() {
+export default function LoginPage({
+  searchParams,
+}: {
+  searchParams: { redirectTo: string };
+}) {
+  const redirectTo = searchParams.redirectTo;
+
   return (
     <div className="container flex h-screen w-full items-center justify-center">
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[400px]">
@@ -49,7 +55,9 @@ export default function LoginPage() {
         <p className="px-8 text-center text-sm text-muted-foreground">
           Chưa có tài khoản?{" "}
           <Link
-            href="/register"
+            href={
+              redirectTo ? `/register?redirectTo=${redirectTo}` : "/register"
+            }
             className="underline underline-offset-4 hover:text-primary"
           >
             Đăng ký ngay

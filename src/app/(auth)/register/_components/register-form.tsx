@@ -9,11 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, Eye, EyeOff } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirectTo") || "/dashboard";
 
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
@@ -26,7 +28,7 @@ export function RegisterForm() {
 
   const register = useRegister({
     onSuccess: () => {
-      router.push("/dashboard");
+      router.push(redirectTo);
     },
   });
 

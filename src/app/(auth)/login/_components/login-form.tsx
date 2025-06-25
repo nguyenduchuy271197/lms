@@ -9,11 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, Eye, EyeOff } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirectTo") || "/dashboard";
 
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -25,7 +27,7 @@ export default function LoginForm() {
 
   const login = useLogin({
     onSuccess: () => {
-      router.push("/dashboard");
+      router.push(redirectTo);
     },
   });
 
