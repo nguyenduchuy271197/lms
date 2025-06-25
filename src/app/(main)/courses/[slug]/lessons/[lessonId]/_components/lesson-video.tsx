@@ -122,13 +122,9 @@ export default function LessonVideo({ lesson }: LessonVideoProps) {
     const handleBeforeUnload = () => {
       // Don't call stopVideo here to avoid state updates during unload
       if (playerRef.current) {
-        try {
-          const internalPlayer = playerRef.current.getInternalPlayer();
-          if (internalPlayer && typeof internalPlayer.pause === "function") {
-            internalPlayer.pause();
-          }
-        } catch (error) {
-          // Ignore errors
+        const internalPlayer = playerRef.current.getInternalPlayer();
+        if (internalPlayer && typeof internalPlayer.pause === "function") {
+          internalPlayer.pause();
         }
       }
       // Save progress directly without state updates
