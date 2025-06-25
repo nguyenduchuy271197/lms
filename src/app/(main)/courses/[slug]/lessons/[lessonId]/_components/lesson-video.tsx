@@ -52,10 +52,26 @@ export default function LessonVideo({ lesson }: LessonVideoProps) {
   watchedSecondsRef.current = watchedSeconds;
   hasBeenCompletedRef.current = hasBeenCompleted;
 
+  // Stop video helper function
+  const stopVideo = useCallback(() => {
+    setIsPlaying(false);
+    if (playerRef.current) {
+      try {
+        const internalPlayer = playerRef.current.getInternalPlayer();
+        if (internalPlayer && typeof internalPlayer.pause === "function") {
+          internalPlayer.pause();
+        }
+      } catch (error) {
+        // Ignore errors when trying to pause
+        console.log("Error pausing video:", error);
+      }
+    }
+  }, []);
+
   // Auto-play when lesson changes and cleanup previous lesson
   useEffect(() => {
     // Stop previous video first
-    setIsPlaying(false);
+    stopVideo();
 
     // Reset states for new lesson
     setWatchedSeconds(0);
@@ -70,7 +86,7 @@ export default function LessonVideo({ lesson }: LessonVideoProps) {
 
       return () => clearTimeout(timer);
     }
-  }, [lesson.id, lesson.video_url]);
+  }, [lesson.id, lesson.video_url, stopVideo]);
 
   // Create a stable function for saving progress
   const saveProgress = useCallback(() => {
@@ -94,12 +110,53 @@ export default function LessonVideo({ lesson }: LessonVideoProps) {
   // Save progress and stop video on unmount
   useEffect(() => {
     return () => {
-      // Stop video playback
-      setIsPlaying(false);
+      // Stop video playback completely
+      stopVideo();
       // Save progress before cleanup
       saveProgress();
     };
-  }, [saveProgress]);
+  }, [saveProgress, stopVideo]);
+
+  // Handle page unload (when user navigates away or closes tab)
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      // Don't call stopVideo here to avoid state updates during unload
+      if (playerRef.current) {
+        try {
+          const internalPlayer = playerRef.current.getInternalPlayer();
+          if (internalPlayer && typeof internalPlayer.pause === "function") {
+            internalPlayer.pause();
+          }
+        } catch (error) {
+          // Ignore errors
+        }
+      }
+      // Save progress directly without state updates
+      if (watchedSecondsRef.current > 0 && lesson.id) {
+        updateProgressMutation.mutate({
+          lesson_id: lesson.id,
+          watched_seconds: Math.floor(watchedSecondsRef.current),
+          completed_at: hasBeenCompletedRef.current
+            ? new Date().toISOString()
+            : null,
+        });
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopVideo();
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [lesson.id]);
 
   // Handle player events
   const handleProgress = useCallback(
