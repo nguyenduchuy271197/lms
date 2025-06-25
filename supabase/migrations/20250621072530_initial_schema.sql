@@ -105,16 +105,12 @@ CREATE INDEX idx_lesson_progress_completed ON lesson_progress(completed_at);
 
 -- Create updated_at trigger function
 CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = ''
-AS $$
+RETURNS TRIGGER AS $$
 BEGIN
     NEW.updated_at = NOW();
     RETURN NEW;
 END;
-$$;
+$$ language 'plpgsql';
 
 -- Create triggers for updated_at
 CREATE TRIGGER update_profiles_updated_at BEFORE UPDATE ON profiles
@@ -131,24 +127,20 @@ CREATE TRIGGER update_lessons_updated_at BEFORE UPDATE ON lessons
 
 -- Function to calculate course progress
 CREATE OR REPLACE FUNCTION calculate_course_progress(p_student_id UUID, p_course_id UUID)
-RETURNS DECIMAL
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = ''
-AS $$
+RETURNS DECIMAL AS $$
 DECLARE
     total_lessons INTEGER;
     completed_lessons INTEGER;
 BEGIN
     -- Get total published lessons in course
     SELECT COUNT(*) INTO total_lessons
-    FROM public.lessons
+    FROM lessons
     WHERE course_id = p_course_id AND is_published = true;
     
     -- Get completed lessons for student
     SELECT COUNT(*) INTO completed_lessons
-    FROM public.lesson_progress lp
-    JOIN public.lessons l ON lp.lesson_id = l.id
+    FROM lesson_progress lp
+    JOIN lessons l ON lp.lesson_id = l.id
     WHERE lp.student_id = p_student_id 
         AND l.course_id = p_course_id 
         AND lp.completed_at IS NOT NULL
@@ -161,35 +153,31 @@ BEGIN
         RETURN ROUND((completed_lessons::DECIMAL / total_lessons::DECIMAL) * 100, 2);
     END IF;
 END;
-$$;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Function to auto-complete enrollment when all lessons are done
 CREATE OR REPLACE FUNCTION check_enrollment_completion()
-RETURNS TRIGGER
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = ''
-AS $$
+RETURNS TRIGGER AS $$
 DECLARE
     progress_percentage DECIMAL;
     enrollment_record RECORD;
 BEGIN
     -- Get enrollment record
     SELECT * INTO enrollment_record
-    FROM public.enrollments e
-    JOIN public.lessons l ON NEW.lesson_id = l.id
+    FROM enrollments e
+    JOIN lessons l ON NEW.lesson_id = l.id
     WHERE e.student_id = NEW.student_id 
         AND e.course_id = l.course_id
         AND e.status = 'active';
     
     IF enrollment_record.id IS NOT NULL AND NEW.completed_at IS NOT NULL THEN
         -- Calculate progress
-        SELECT public.calculate_course_progress(NEW.student_id, enrollment_record.course_id) 
+        SELECT calculate_course_progress(NEW.student_id, enrollment_record.course_id) 
         INTO progress_percentage;
         
         -- If 100% complete, mark enrollment as completed
         IF progress_percentage >= 100 THEN
-            UPDATE public.enrollments 
+            UPDATE enrollments 
             SET status = 'completed', completed_at = NOW()
             WHERE id = enrollment_record.id;
         END IF;
@@ -197,7 +185,7 @@ BEGIN
     
     RETURN NEW;
 END;
-$$;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 CREATE TRIGGER trigger_check_enrollment_completion
     AFTER INSERT OR UPDATE ON lesson_progress
@@ -205,11 +193,7 @@ CREATE TRIGGER trigger_check_enrollment_completion
 
 -- Function to automatically create profile when user signs up
 CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = ''
-AS $$
+RETURNS TRIGGER AS $$
 BEGIN
     INSERT INTO public.profiles (id, email, full_name, role)
     VALUES (
@@ -220,7 +204,7 @@ BEGIN
     );
     RETURN NEW;
 END;
-$$;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Trigger to create profile on user signup
 CREATE OR REPLACE TRIGGER on_auth_user_created
@@ -239,33 +223,25 @@ ALTER TABLE lesson_progress ENABLE ROW LEVEL SECURITY;
 
 -- Function to check user role directly (bypassing RLS)
 CREATE OR REPLACE FUNCTION check_user_role(user_id UUID)
-RETURNS TEXT
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = ''
-AS $$
+RETURNS TEXT AS $$
 DECLARE
     user_role TEXT;
 BEGIN
     SELECT role INTO user_role 
-    FROM public.profiles 
+    FROM profiles 
     WHERE id = user_id;
     
     RETURN COALESCE(user_role, 'student');
 END;
-$$;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Function to check if current user is admin (bypassing RLS)
 CREATE OR REPLACE FUNCTION current_user_is_admin()
-RETURNS BOOLEAN
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = ''
-AS $$
+RETURNS BOOLEAN AS $$
 BEGIN
-    RETURN public.check_user_role(auth.uid()) = 'admin';
+    RETURN check_user_role(auth.uid()) = 'admin';
 END;
-$$;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- RLS Policies
 
