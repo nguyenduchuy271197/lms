@@ -33,15 +33,8 @@ export async function generateMetadata({
 
   return {
     title: course.title,
-    description:
-      course.description ||
-      `Tìm hiểu về khóa học ${course.title} và nâng cao kỹ năng của bạn`,
-    keywords: [
-      course.title,
-      "khóa học",
-      "học tập",
-      course.category?.name || "",
-    ].filter(Boolean),
+    description: course.description,
+    keywords: [course.title, "khóa học", "học tập"].filter(Boolean),
     openGraph: {
       title: `${course.title} | LMS`,
       description:

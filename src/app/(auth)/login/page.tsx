@@ -23,12 +23,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function LoginPage({
+export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: { redirectTo: string };
+  searchParams: Promise<{ redirectTo?: string }>;
 }) {
-  const redirectTo = searchParams.redirectTo;
+  const { redirectTo } = await searchParams;
 
   return (
     <div className="container flex h-screen w-full items-center justify-center">
