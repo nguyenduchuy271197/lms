@@ -1,10 +1,23 @@
 import { Suspense } from "react";
+import { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getCategories } from "@/actions/categories/get-categories";
 import { getCourses } from "@/actions/courses/get-courses";
 import { Loading } from "@/components/shared/loading";
 import CourseCategoriesSection from "./_components/course-categories-section";
+
+export const metadata: Metadata = {
+  title: "Trang chủ",
+  description:
+    "Khám phá hàng ngàn khóa học chất lượng cao, học tập theo tiến độ của bạn và nâng cao kỹ năng cùng những giảng viên hàng đầu.",
+  keywords: ["trang chủ", "khóa học trực tuyến", "học tập", "e-learning"],
+  openGraph: {
+    title: "Trang chủ | LMS",
+    description:
+      "Khám phá hàng ngàn khóa học chất lượng cao, học tập theo tiến độ của bạn và nâng cao kỹ năng cùng những giảng viên hàng đầu.",
+  },
+};
 
 export default async function HomePage() {
   // Fetch categories and courses server-side

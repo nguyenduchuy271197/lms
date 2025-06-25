@@ -6,8 +6,18 @@ import { Loading } from "@/components/shared/loading";
 import { UserManagementContainer } from "./_components/user-management-container";
 
 export const metadata: Metadata = {
-  title: "Quản lý người dùng | LMS Admin",
-  description: "Quản lý tài khoản và phân quyền người dùng",
+  title: "Quản lý người dùng",
+  description: "Quản lý tài khoản và phân quyền người dùng trong hệ thống",
+  keywords: [
+    "quản lý người dùng",
+    "admin users",
+    "user management",
+    "phân quyền",
+  ],
+  openGraph: {
+    title: "Quản lý người dùng | LMS",
+    description: "Quản lý tài khoản và phân quyền người dùng trong hệ thống",
+  },
 };
 
 export default async function UsersPage() {

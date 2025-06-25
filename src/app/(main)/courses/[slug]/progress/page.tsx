@@ -35,7 +35,18 @@ export async function generateMetadata({
 
     return {
       title: `Tiến độ - ${course.title}`,
-      description: `Theo dõi tiến độ học tập khóa học ${course.title}`,
+      description: `Theo dõi tiến độ học tập khóa học ${course.title} và xem chi tiết kết quả học tập`,
+      keywords: [
+        "tiến độ học tập",
+        "course progress",
+        course.title,
+        "kết quả học tập",
+      ],
+      openGraph: {
+        title: `Tiến độ - ${course.title} | LMS`,
+        description: `Theo dõi tiến độ học tập khóa học ${course.title} và xem chi tiết kết quả học tập`,
+        images: course.thumbnail_url ? [course.thumbnail_url] : undefined,
+      },
     };
   } catch {
     return {

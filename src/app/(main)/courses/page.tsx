@@ -6,9 +6,15 @@ import { PageHeader } from "@/components/shared/page-header";
 import { Loading } from "@/components/shared/loading";
 
 export const metadata: Metadata = {
-  title: "Khóa học | LMS",
+  title: "Khóa học",
   description:
-    "Khám phá các khóa học chất lượng cao và nâng cao kỹ năng của bạn",
+    "Khám phá các khóa học chất lượng cao và nâng cao kỹ năng của bạn với những giảng viên chuyên nghiệp",
+  keywords: ["khóa học", "courses", "học tập", "skill", "kỹ năng"],
+  openGraph: {
+    title: "Khóa học | LMS",
+    description:
+      "Khám phá các khóa học chất lượng cao và nâng cao kỹ năng của bạn với những giảng viên chuyên nghiệp",
+  },
 };
 
 interface SearchParams {

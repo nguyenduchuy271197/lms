@@ -5,8 +5,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireAuth } from "@/lib/auth";
 
 export const metadata: Metadata = {
-  title: "Hồ sơ cá nhân | LMS",
-  description: "Quản lý thông tin hồ sơ cá nhân",
+  title: "Hồ sơ cá nhân",
+  description: "Quản lý thông tin hồ sơ cá nhân và cài đặt tài khoản của bạn",
+  keywords: [
+    "hồ sơ cá nhân",
+    "profile",
+    "thông tin cá nhân",
+    "cài đặt tài khoản",
+  ],
+  openGraph: {
+    title: "Hồ sơ cá nhân | LMS",
+    description: "Quản lý thông tin hồ sơ cá nhân và cài đặt tài khoản của bạn",
+  },
 };
 
 export default async function ProfilePage() {

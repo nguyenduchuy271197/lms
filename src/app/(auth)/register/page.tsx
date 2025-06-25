@@ -12,8 +12,15 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Đăng ký | LMS",
-  description: "Tạo tài khoản mới cho hệ thống học tập trực tuyến",
+  title: "Đăng ký",
+  description:
+    "Tạo tài khoản mới cho hệ thống học tập trực tuyến và khám phá hàng ngàn khóa học chất lượng cao",
+  keywords: ["đăng ký", "tài khoản mới", "register", "tham gia"],
+  openGraph: {
+    title: "Đăng ký | LMS",
+    description:
+      "Tạo tài khoản mới cho hệ thống học tập trực tuyến và khám phá hàng ngàn khóa học chất lượng cao",
+  },
 };
 
 export default function RegisterPage() {

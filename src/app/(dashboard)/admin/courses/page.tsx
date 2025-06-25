@@ -6,7 +6,19 @@ import CourseManagementContainer from "./_components/course-management-container
 
 export const metadata: Metadata = {
   title: "Quản lý khóa học",
-  description: "Quản lý danh sách khóa học của hệ thống",
+  description:
+    "Quản lý danh sách khóa học của hệ thống - Tạo, chỉnh sửa và theo dõi khóa học",
+  keywords: [
+    "quản lý khóa học",
+    "admin courses",
+    "course management",
+    "khóa học",
+  ],
+  openGraph: {
+    title: "Quản lý khóa học | LMS",
+    description:
+      "Quản lý danh sách khóa học của hệ thống - Tạo, chỉnh sửa và theo dõi khóa học",
+  },
 };
 
 export default async function CourseManagementPage() {

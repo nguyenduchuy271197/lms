@@ -1,8 +1,21 @@
 import { Suspense } from "react";
+import { Metadata } from "next";
 import { requireAdmin } from "@/lib/auth";
 import { PageHeader } from "@/components/shared/page-header";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { AdminStatsContainer } from "./_components/admin-stats-container";
+
+export const metadata: Metadata = {
+  title: "Quản trị hệ thống",
+  description:
+    "Tổng quan và quản lý toàn bộ hệ thống LMS - Dành cho quản trị viên",
+  keywords: ["admin", "quản trị", "hệ thống", "dashboard admin", "quản lý"],
+  openGraph: {
+    title: "Quản trị hệ thống | LMS",
+    description:
+      "Tổng quan và quản lý toàn bộ hệ thống LMS - Dành cho quản trị viên",
+  },
+};
 
 export default async function AdminPage() {
   // Authentication check

@@ -24,7 +24,7 @@ export async function generateMetadata({
 
   if (!result.success) {
     return {
-      title: "Danh mục không tìm thấy | LMS",
+      title: "Danh mục không tìm thấy",
       description: "Danh mục bạn đang tìm kiếm không tồn tại.",
     };
   }
@@ -34,16 +34,23 @@ export async function generateMetadata({
 
   if (!category) {
     return {
-      title: "Danh mục không tìm thấy | LMS",
+      title: "Danh mục không tìm thấy",
       description: "Danh mục bạn đang tìm kiếm không tồn tại.",
     };
   }
 
   return {
-    title: `${category.name} | LMS`,
+    title: category.name,
     description:
       category.description ||
       `Khám phá các khóa học trong danh mục ${category.name}`,
+    keywords: [category.name, "danh mục", "khóa học", "category"],
+    openGraph: {
+      title: `${category.name} | LMS`,
+      description:
+        category.description ||
+        `Khám phá các khóa học trong danh mục ${category.name}`,
+    },
   };
 }
 

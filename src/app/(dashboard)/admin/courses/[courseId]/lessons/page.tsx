@@ -11,7 +11,17 @@ interface PageProps {
 
 export const metadata: Metadata = {
   title: "Quản lý bài học",
-  description: "Quản lý bài học trong khóa học",
+  description: "Tạo, chỉnh sửa và sắp xếp các bài học trong khóa học",
+  keywords: [
+    "quản lý bài học",
+    "lesson management",
+    "admin lessons",
+    "bài học",
+  ],
+  openGraph: {
+    title: "Quản lý bài học | LMS",
+    description: "Tạo, chỉnh sửa và sắp xếp các bài học trong khóa học",
+  },
 };
 
 export default async function LessonManagementPage({ params }: PageProps) {

@@ -24,7 +24,7 @@ export async function generateMetadata({
 
   if (!result.success) {
     return {
-      title: "Khóa học không tìm thấy | LMS",
+      title: "Khóa học không tìm thấy",
       description: "Khóa học bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.",
     };
   }
@@ -32,11 +32,21 @@ export async function generateMetadata({
   const course = result.data;
 
   return {
-    title: `${course.title} | LMS`,
-    description: course.description || `Tìm hiểu về khóa học ${course.title}`,
+    title: course.title,
+    description:
+      course.description ||
+      `Tìm hiểu về khóa học ${course.title} và nâng cao kỹ năng của bạn`,
+    keywords: [
+      course.title,
+      "khóa học",
+      "học tập",
+      course.category?.name || "",
+    ].filter(Boolean),
     openGraph: {
-      title: course.title,
-      description: course.description || undefined,
+      title: `${course.title} | LMS`,
+      description:
+        course.description ||
+        `Tìm hiểu về khóa học ${course.title} và nâng cao kỹ năng của bạn`,
       images: course.thumbnail_url ? [course.thumbnail_url] : undefined,
     },
   };

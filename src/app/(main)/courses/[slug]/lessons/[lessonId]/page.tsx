@@ -32,8 +32,16 @@ export async function generateMetadata({
     const lesson = result.data;
 
     return {
-      title: `${lesson.title} - Học tập`,
-      description: lesson.description || "Xem video bài học",
+      title: lesson.title,
+      description:
+        lesson.description || "Xem video bài học và nâng cao kiến thức của bạn",
+      keywords: [lesson.title, "bài học", "video học tập", "e-learning"],
+      openGraph: {
+        title: `${lesson.title} | LMS`,
+        description:
+          lesson.description ||
+          "Xem video bài học và nâng cao kiến thức của bạn",
+      },
     };
   } catch {
     return {
