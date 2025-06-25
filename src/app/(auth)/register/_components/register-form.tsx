@@ -26,7 +26,7 @@ export function RegisterForm() {
 
   const register = useRegister({
     onSuccess: () => {
-      router.push("/login?message=registration-success");
+      router.push("/dashboard");
     },
   });
 
