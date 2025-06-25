@@ -41,6 +41,7 @@ interface UserTableProps {
   onEditUser: (userId: string) => void;
   currentPage: number;
   onPageChange: (page: number) => void;
+  currentUserId?: string;
 }
 
 export function UserTable({
@@ -51,6 +52,7 @@ export function UserTable({
   onEditUser,
   currentPage,
   onPageChange,
+  currentUserId,
 }: UserTableProps) {
   const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
   const [roleChangeUserId, setRoleChangeUserId] = useState<string | null>(null);
@@ -59,7 +61,11 @@ export function UserTable({
 
   const handleSelectAll = (checked: boolean) => {
     if (checked && data?.users) {
-      onSelectionChange(data.users.map((user) => user.id));
+      // Exclude current user from selection
+      const selectableUsers = data.users
+        .filter((user) => user.id !== currentUserId)
+        .map((user) => user.id);
+      onSelectionChange(selectableUsers);
     } else {
       onSelectionChange([]);
     }
@@ -111,9 +117,12 @@ export function UserTable({
   }
 
   const users = data?.users || [];
-  const allSelected = users.length > 0 && selectedUsers.length === users.length;
+  const selectableUsers = users.filter((user) => user.id !== currentUserId);
+  const allSelected =
+    selectableUsers.length > 0 &&
+    selectedUsers.length === selectableUsers.length;
   const someSelected =
-    selectedUsers.length > 0 && selectedUsers.length < users.length;
+    selectedUsers.length > 0 && selectedUsers.length < selectableUsers.length;
 
   return (
     <div className="space-y-4">
@@ -148,6 +157,7 @@ export function UserTable({
                 <TableCell>
                   <Checkbox
                     checked={selectedUsers.includes(user.id)}
+                    disabled={currentUserId === user.id}
                     onCheckedChange={(checked) =>
                       handleSelectUser(user.id, checked as boolean)
                     }
@@ -162,8 +172,13 @@ export function UserTable({
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <div className="font-medium">
+                      <div className="font-medium flex items-center gap-2">
                         {user.full_name || "Chưa cập nhật"}
+                        {currentUserId === user.id && (
+                          <Badge variant="outline" className="text-xs">
+                            Bạn
+                          </Badge>
+                        )}
                       </div>
                       <div className="text-sm text-muted-foreground">
                         {user.email}
@@ -203,20 +218,25 @@ export function UserTable({
                         <Edit className="h-4 w-4 mr-2" />
                         Chỉnh sửa
                       </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => setRoleChangeUserId(user.id)}
-                      >
-                        <Shield className="h-4 w-4 mr-2" />
-                        Đổi vai trò
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        className="text-red-600"
-                        onClick={() => setDeleteUserId(user.id)}
-                      >
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        Xóa
-                      </DropdownMenuItem>
+                      {currentUserId !== user.id && (
+                        <>
+                          <DropdownMenuItem
+                            onClick={() => setRoleChangeUserId(user.id)}
+                          >
+                            <Shield className="h-4 w-4 mr-2" />
+                            Đổi vai trò
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+
+                          <DropdownMenuItem
+                            className="text-red-600"
+                            onClick={() => setDeleteUserId(user.id)}
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Xóa
+                          </DropdownMenuItem>
+                        </>
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>

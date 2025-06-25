@@ -11,13 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  LogOut,
-  Settings,
-  User,
-  LayoutDashboard,
-  BookOpen,
-} from "lucide-react";
+import { LogOut, User, LayoutDashboard, BookOpen } from "lucide-react";
 import Link from "next/link";
 import { useLogout } from "@/hooks/auth/use-logout";
 

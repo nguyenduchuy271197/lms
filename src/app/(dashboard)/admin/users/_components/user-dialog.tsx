@@ -55,6 +55,9 @@ interface UserDialogProps {
 
 export function UserDialog({ isOpen, onClose, userId }: UserDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<"student" | "admin">(
+    "student"
+  );
   const isEditing = !!userId;
 
   const { data: user, isLoading: isLoadingUser } = useUserById(
@@ -73,32 +76,30 @@ export function UserDialog({ isOpen, onClose, userId }: UserDialogProps) {
     },
   });
 
-  // Reset form when user data is loaded or dialog is closed
+  // Reset form when dialog opens/closes or user data changes
   useEffect(() => {
-    if (isEditing && user) {
-      form.reset({
-        full_name: user.full_name || "",
-        email: user.email,
-        role: user.role,
-      });
-    } else if (!isEditing) {
-      form.reset({
-        full_name: "",
-        email: "",
-        role: "student",
-      });
+    if (isOpen) {
+      if (isEditing && user && !isLoadingUser) {
+        // Wait for user data to be fully loaded
+        const formData = {
+          full_name: user.full_name || "",
+          email: user.email,
+          role: user.role,
+        };
+        form.reset(formData);
+        setSelectedRole(user.role);
+      } else if (!isEditing) {
+        form.reset({
+          full_name: "",
+          email: "",
+          role: "student",
+        });
+        setSelectedRole("student");
+      }
     }
-  }, [user, isEditing, form]);
+  }, [isOpen, user, isEditing, isLoadingUser, form]);
 
   const handleSubmit = async (data: UserFormData) => {
-    if (!isEditing) {
-      // For creating new users, we would need a separate action
-      // Since there's no create user action in the current structure,
-      // we'll show an error for now
-      alert("Tính năng tạo người dùng mới chưa được implement");
-      return;
-    }
-
     setIsLoading(true);
     try {
       await updateUserMutation.mutateAsync({
@@ -120,7 +121,7 @@ export function UserDialog({ isOpen, onClose, userId }: UserDialogProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]" key={userId}>
         <DialogHeader>
           <DialogTitle>
             {isEditing ? "Chỉnh sửa người dùng" : "Thêm người dùng mới"}
@@ -168,9 +169,16 @@ export function UserDialog({ isOpen, onClose, userId }: UserDialogProps) {
                       <Input
                         type="email"
                         placeholder="Nhập địa chỉ email"
+                        disabled={isEditing}
+                        className={isEditing ? "bg-muted" : ""}
                         {...field}
                       />
                     </FormControl>
+                    {isEditing && (
+                      <p className="text-xs text-muted-foreground">
+                        Email không thể thay đổi
+                      </p>
+                    )}
                     <FormMessage />
                   </FormItem>
                 )}
@@ -179,30 +187,36 @@ export function UserDialog({ isOpen, onClose, userId }: UserDialogProps) {
               <FormField
                 control={form.control}
                 name="role"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Vai trò</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Chọn vai trò" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="student">
-                          {LABELS.USER_ROLES.student}
-                        </SelectItem>
-                        <SelectItem value="admin">
-                          {LABELS.USER_ROLES.admin}
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  return (
+                    <FormItem>
+                      <FormLabel>Vai trò</FormLabel>
+                      <Select
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          setSelectedRole(value as "student" | "admin");
+                        }}
+                        value={selectedRole}
+                        key={`${userId}-${selectedRole}`} // Force re-render when value changes
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Chọn vai trò" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="student">
+                            {LABELS.USER_ROLES.student}
+                          </SelectItem>
+                          <SelectItem value="admin">
+                            {LABELS.USER_ROLES.admin}
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
               />
 
               <DialogFooter>

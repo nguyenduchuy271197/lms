@@ -8,6 +8,7 @@ import { UserTable } from "./user-table";
 import { UserDialog } from "./user-dialog";
 import { UserBulkActions } from "./user-bulk-actions";
 import { useAllUsers } from "@/hooks/user-management/use-all-users";
+import { useProfile } from "@/hooks/users/use-profile";
 import { UserRole } from "@/types/custom.types";
 
 export function UserManagementContainer() {
@@ -17,6 +18,8 @@ export function UserManagementContainer() {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editUserId, setEditUserId] = useState<string | undefined>(undefined);
+
+  const { data: currentUser } = useProfile();
 
   const {
     data: usersData,
@@ -85,6 +88,7 @@ export function UserManagementContainer() {
           onEditUser={handleEditUser}
           currentPage={page}
           onPageChange={setPage}
+          currentUserId={currentUser?.id}
         />
       </Card>
 

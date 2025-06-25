@@ -54,7 +54,7 @@ export const COURSE_ERRORS = {
   // Publishing
   COURSE_PUBLISH_FAILED: 'Xuất bản khóa học thất bại',
   COURSE_UNPUBLISH_FAILED: 'Hủy xuất bản khóa học thất bại',
-  COURSE_NOT_READY: 'Khóa học chưa sẵn sàng để xuất bản',
+  COURSE_NOT_READY: 'Khóa học chưa có đủ thông tin để xuất bản (cần có tiêu đề và mô tả)',
 } as const
 
 // Lesson Error Messages

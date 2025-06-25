@@ -35,23 +35,6 @@ export async function publishCourse(params: PublishCourseInput): Promise<Result>
 
     // 5. If publishing, check if course is ready
     if (is_published) {
-      // Check if course has at least one published lesson
-      const { data: lessons, error: lessonsError } = await supabase
-        .from("lessons")
-        .select("id")
-        .eq("course_id", id)
-        .eq("is_published", true)
-        .limit(1)
-
-      if (lessonsError) {
-        console.error("Check lessons error:", lessonsError)
-        return { success: false, error: getErrorMessage(lessonsError) }
-      }
-
-      if (!lessons || lessons.length === 0) {
-        return { success: false, error: COURSE_ERRORS.COURSE_NOT_READY }
-      }
-
       // Check if course has required fields
       if (!existingCourse.title || !existingCourse.description) {
         return { success: false, error: COURSE_ERRORS.COURSE_NOT_READY }

@@ -70,16 +70,11 @@ export async function bulkUpdateCourses(
 
         switch (action) {
           case 'publish':
-            // Check if course has lessons before publishing
-            const { count: lessonsCount } = await supabase
-              .from('lessons')
-              .select('*', { count: 'exact', head: true })
-              .eq('course_id', course.id)
-
-            if (!lessonsCount || lessonsCount === 0) {
+            // Check if course has required fields
+            if (!course.title) {
               result.errors.push({
                 course_id: course.id,
-                error: 'Không thể xuất bản khóa học không có bài học'
+                error: 'Không thể xuất bản khóa học thiếu tiêu đề hoặc mô tả'
               })
               result.failed++
               continue
