@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import {
   LayoutDashboard,
   BookOpen,
@@ -15,6 +16,7 @@ import {
   Tags,
 } from "lucide-react";
 import { AuthUser } from "@/lib/auth";
+import { useMobileSidebar } from "@/components/providers/mobile-sidebar-provider";
 
 interface DashboardSidebarProps {
   user: AuthUser;
@@ -71,8 +73,9 @@ const adminNavItems = [
   // },
 ];
 
-export default function DashboardSidebar({ user }: DashboardSidebarProps) {
+function SidebarContent({ user }: DashboardSidebarProps) {
   const pathname = usePathname();
+  const { setIsOpen } = useMobileSidebar();
 
   // Get navigation items based on user role
   const getNavItems = () => {
@@ -87,8 +90,12 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
 
   const navItems = getNavItems();
 
+  const handleLinkClick = () => {
+    setIsOpen(false);
+  };
+
   return (
-    <div className="w-64 bg-card border-r">
+    <>
       <div className="p-6">
         <Link href="/" className="flex items-center space-x-2">
           <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
@@ -138,7 +145,7 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
                 )}
                 asChild
               >
-                <Link href={item.href}>
+                <Link href={item.href} onClick={handleLinkClick}>
                   <item.icon className="mr-2 h-4 w-4" />
                   {item.title}
                 </Link>
@@ -147,6 +154,28 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
           })}
         </div>
       </ScrollArea>
-    </div>
+    </>
+  );
+}
+
+export default function DashboardSidebar({ user }: DashboardSidebarProps) {
+  const { isOpen, setIsOpen } = useMobileSidebar();
+
+  return (
+    <>
+      {/* Desktop Sidebar */}
+      <div className="hidden md:flex w-64 bg-card border-r flex-col">
+        <SidebarContent user={user} />
+      </div>
+
+      {/* Mobile Sidebar */}
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <SheetContent side="left" className="p-0 w-64">
+          <div className="flex flex-col h-full bg-card">
+            <SidebarContent user={user} />
+          </div>
+        </SheetContent>
+      </Sheet>
+    </>
   );
 }

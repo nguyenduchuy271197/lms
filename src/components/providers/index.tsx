@@ -1,5 +1,19 @@
-import { QueryProvider } from "./query-provider";
+"use client";
 
-export default function Providers({ children }: { children: React.ReactNode }) {
-  return <QueryProvider>{children}</QueryProvider>;
+import { QueryProvider } from "./query-provider";
+import ToastProvider from "./toast-provider";
+import { MobileSidebarProvider } from "./mobile-sidebar-provider";
+
+interface ProvidersProps {
+  children: React.ReactNode;
+}
+
+export function Providers({ children }: ProvidersProps) {
+  return (
+    <QueryProvider>
+      <ToastProvider>
+        <MobileSidebarProvider>{children}</MobileSidebarProvider>
+      </ToastProvider>
+    </QueryProvider>
+  );
 }
